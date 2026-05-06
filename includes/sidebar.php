@@ -8,7 +8,7 @@
         <a href="/surtete/index.php">🏠 Inicio</a>
         <a href="/surtete/ventas/pos.php">🛒 Ventas</a>
         <a href="/surtete/productos/index.php">📦 Productos</a>
-        <a href="#">🚚 Proveedores</a>
+        <a href="../proveedores/proveedores.php">🚚 Proveedores</a>
         <a href="#">📥 Compras</a>
         <a href="#">📊 Reportes</a>
 
