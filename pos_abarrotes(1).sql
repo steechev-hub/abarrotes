@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-05-2026 a las 21:17:33
+-- Tiempo de generación: 07-05-2026 a las 01:30:14
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -32,6 +32,17 @@ CREATE TABLE `categorias` (
   `nombre` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`id`, `nombre`) VALUES
+(1, 'Refrescos'),
+(2, 'Botanas'),
+(3, 'Lácteos'),
+(4, 'Abarrotes'),
+(5, 'Dulces');
+
 -- --------------------------------------------------------
 
 --
@@ -43,7 +54,8 @@ CREATE TABLE `compras` (
   `proveedor_id` int(11) DEFAULT NULL,
   `fecha` datetime DEFAULT current_timestamp(),
   `total` decimal(10,2) DEFAULT NULL,
-  `estado` enum('pendiente','recibido','pagado') DEFAULT 'pendiente'
+  `estado` enum('pendiente','recibido','pagado') DEFAULT 'pendiente',
+  `usuario_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -90,6 +102,16 @@ CREATE TABLE `detalle_venta` (
   `subtotal` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `detalle_venta`
+--
+
+INSERT INTO `detalle_venta` (`id`, `venta_id`, `producto_id`, `cantidad`, `precio`, `subtotal`) VALUES
+(1, 1, 1, 2, 31.00, 62.00),
+(2, 1, 2, 1, 2.00, 2.00),
+(3, 2, 1, 1, 31.00, 31.00),
+(4, 3, 1, 1, 31.00, 31.00);
+
 -- --------------------------------------------------------
 
 --
@@ -131,8 +153,18 @@ CREATE TABLE `productos` (
   `precio_compra` decimal(10,2) DEFAULT NULL,
   `precio_venta` decimal(10,2) DEFAULT NULL,
   `stock` int(11) DEFAULT 0,
-  `categoria_id` int(11) DEFAULT NULL
+  `categoria_id` int(11) DEFAULT NULL,
+  `stock_minimo` int(11) DEFAULT 5
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `productos`
+--
+
+INSERT INTO `productos` (`id`, `codigo_barras`, `nombre`, `descripcion`, `precio_compra`, `precio_venta`, `stock`, `categoria_id`, `stock_minimo`) VALUES
+(1, '987654321', 'Lala deslactosada', NULL, 28.00, 31.00, 9, 3, 5),
+(2, '09876543210', 'Bubaloo rojo', NULL, 1.00, 2.00, 9, 5, 5),
+(3, '12345678', 'Coca-cola 600ml', NULL, 25.00, 20.00, 10, 1, 5);
 
 -- --------------------------------------------------------
 
@@ -178,8 +210,22 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `password`, `rol`) VALUES
 CREATE TABLE `ventas` (
   `id` int(11) NOT NULL,
   `fecha` datetime DEFAULT current_timestamp(),
-  `total` decimal(10,2) DEFAULT NULL
+  `total` decimal(10,2) DEFAULT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
+  `metodo_pago` enum('efectivo','tarjeta','transferencia') DEFAULT 'efectivo',
+  `folio` varchar(50) DEFAULT NULL,
+  `recibido` decimal(10,2) DEFAULT NULL,
+  `cambio` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`id`, `fecha`, `total`, `usuario_id`, `metodo_pago`, `folio`, `recibido`, `cambio`) VALUES
+(1, '2026-05-06 16:22:58', 64.00, NULL, 'efectivo', NULL, NULL, NULL),
+(2, '2026-05-06 16:40:40', 31.00, NULL, 'efectivo', NULL, NULL, NULL),
+(3, '2026-05-06 17:25:37', 31.00, NULL, 'efectivo', NULL, 40.00, 9.00);
 
 --
 -- Índices para tablas volcadas
@@ -196,7 +242,8 @@ ALTER TABLE `categorias`
 --
 ALTER TABLE `compras`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `proveedor_id` (`proveedor_id`);
+  ADD KEY `proveedor_id` (`proveedor_id`),
+  ADD KEY `usuario_id` (`usuario_id`);
 
 --
 -- Indices de la tabla `detalle_compra`
@@ -261,7 +308,8 @@ ALTER TABLE `usuarios`
 -- Indices de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -271,7 +319,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `compras`
@@ -295,7 +343,7 @@ ALTER TABLE `detalle_pedido`
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `pagos_proveedores`
@@ -313,7 +361,7 @@ ALTER TABLE `pedidos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
@@ -331,7 +379,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas
@@ -341,7 +389,8 @@ ALTER TABLE `ventas`
 -- Filtros para la tabla `compras`
 --
 ALTER TABLE `compras`
-  ADD CONSTRAINT `compras_ibfk_1` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`);
+  ADD CONSTRAINT `compras_ibfk_1` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`),
+  ADD CONSTRAINT `compras_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 --
 -- Filtros para la tabla `detalle_compra`
@@ -381,6 +430,12 @@ ALTER TABLE `pedidos`
 --
 ALTER TABLE `productos`
   ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`);
+
+--
+-- Filtros para la tabla `ventas`
+--
+ALTER TABLE `ventas`
+  ADD CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
