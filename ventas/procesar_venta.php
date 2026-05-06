@@ -5,25 +5,40 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 $total = 0;
 
-foreach($data as $p){
+foreach($data['productos'] as $p){
+
     $total += $p['precio_venta'] * $p['cantidad'];
 }
 
-// Crear venta
-$stmt = $conexion->prepare("INSERT INTO ventas (total) VALUES (?)");
-$stmt->execute([$total]);
+$recibido = $data['recibido'];
+$cambio = $recibido - $total;
+
+/* GUARDAR VENTA */
+
+$stmt = $conexion->prepare("
+INSERT INTO ventas(total, recibido, cambio)
+VALUES(?,?,?)
+");
+
+$stmt->execute([
+    $total,
+    $recibido,
+    $cambio
+]);
 
 $venta_id = $conexion->lastInsertId();
 
-// Insertar detalle
-foreach($data as $p){
+/* GUARDAR DETALLE */
 
-    $subtotal = $p['precio_venta'] * $p['cantidad'];
+foreach($data['productos'] as $p){
+
+    $subtotal =
+        $p['precio_venta'] * $p['cantidad'];
 
     $stmt = $conexion->prepare("
-        INSERT INTO detalle_venta 
-        (venta_id, producto_id, cantidad, precio, subtotal)
-        VALUES (?, ?, ?, ?, ?)
+    INSERT INTO detalle_venta
+    (venta_id, producto_id, cantidad, precio, subtotal)
+    VALUES(?,?,?,?,?)
     ");
 
     $stmt->execute([
@@ -34,14 +49,23 @@ foreach($data as $p){
         $subtotal
     ]);
 
-    // Descontar stock
-    $stmt = $conexion->prepare("
-        UPDATE productos 
-        SET stock = stock - ? 
-        WHERE id = ?
+    /* DESCONTAR STOCK */
+
+    $update = $conexion->prepare("
+    UPDATE productos
+    SET stock = stock - ?
+    WHERE id = ?
     ");
 
-    $stmt->execute([$p['cantidad'], $p['id']]);
+    $update->execute([
+        $p['cantidad'],
+        $p['id']
+    ]);
 }
 
-echo "OK";
+/* RESPUESTA */
+
+echo json_encode([
+    "ok" => true,
+    "venta_id" => $venta_id
+]);
