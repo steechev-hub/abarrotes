@@ -2,6 +2,7 @@
 session_start();
 include("../config/db.php");
 
+
 $usuario = $_POST['usuario'];
 $password = md5($_POST['password']);
 
