@@ -9,7 +9,7 @@
         <a href="/surtete/ventas/pos.php">🛒 Ventas</a>
         <a href="/surtete/productos/index.php">📦 Productos</a>
         <a href="/surtete/proveedores/proveedores.php">🚚 Proveedores</a>
-        <a href="#">📥 Compras</a>
+        <a href="/surtete/compras/crear.php">📥 Compras</a>
         <a href="#">📊 Reportes</a>
 
         <?php if($_SESSION['rol'] == 'admin'): ?>

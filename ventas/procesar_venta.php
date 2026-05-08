@@ -49,37 +49,129 @@ foreach($data['productos'] as $p){
         $subtotal
     ]);
 
-    /* DESCONTAR STOCK */
+    /* =========================
+    FIFO LOTES
+    ========================= */
 
-    $update = $conexion->prepare("
-    UPDATE productos
-    SET stock = stock - ?
-    WHERE id = ?
+    $cantidad_restante = $p['cantidad'];
+
+    /* OBTENER LOTES MAS VIEJOS */
+
+    $lotes = $conexion->prepare("
+    SELECT *
+    FROM lotes
+    WHERE producto_id = ?
+    AND stock > 0
+    ORDER BY fecha_caducidad ASC
     ");
 
-    $update->execute([
-        $p['cantidad'],
+    $lotes->execute([
         $p['id']
     ]);
 
-    /* STOCK ACTUAL */
+    $lotes = $lotes->fetchAll();
 
-    $stock_actual = $conexion->prepare("
-    SELECT stock
-    FROM productos
-    WHERE id = ?
-    ");
+    /* RECORRER LOTES */
 
-    $stock_actual->execute([$p['id']]);
+    foreach($lotes as $lote){
 
-    $actual = $stock_actual->fetch();
+        if($cantidad_restante <= 0){
+            break;
+        }
 
-    $stock_nuevo = $actual['stock'];
+        $stock_lote = $lote['stock'];
 
-    /* STOCK ANTERIOR */
+        /* CUANTO DESCONTAR */
 
-    $stock_anterior =
-        $stock_nuevo + $p['cantidad'];
+        $descontar =
+            min($cantidad_restante, $stock_lote);
+
+        /* NUEVO STOCK LOTE */
+
+        $nuevo_stock_lote =
+            $stock_lote - $descontar;
+
+        /* ACTUALIZAR LOTE */
+
+        $updateLote = $conexion->prepare("
+        UPDATE lotes
+        SET stock = ?
+        WHERE id = ?
+        ");
+
+        $updateLote->execute([
+            $nuevo_stock_lote,
+            $lote['id']
+        ]);
+
+        /* STOCK GENERAL */
+
+        $stockActual = $conexion->prepare("
+        SELECT stock
+        FROM productos
+        WHERE id = ?
+        ");
+
+        $stockActual->execute([
+            $p['id']
+        ]);
+
+        $actual = $stockActual->fetch();
+
+        $stock_anterior = $actual['stock'];
+
+        $stock_nuevo =
+            $stock_anterior - $descontar;
+
+        /* DESCONTAR STOCK GENERAL */
+
+        $updateProducto = $conexion->prepare("
+        UPDATE productos
+        SET stock = stock - ?
+        WHERE id = ?
+        ");
+
+        $updateProducto->execute([
+            $descontar,
+            $p['id']
+        ]);
+
+        /* MOVIMIENTO INVENTARIO */
+
+        $mov = $conexion->prepare("
+        INSERT INTO movimientos_inventario
+        (
+            producto_id,
+            lote_id,
+            tipo,
+            motivo,
+            cantidad,
+            stock_anterior,
+            stock_nuevo,
+            referencia_id,
+            referencia_tabla
+        )
+        VALUES(?,?,?,?,?,?,?,?,?)
+        ");
+
+        $mov->execute([
+
+            $p['id'],
+            $lote['id'],
+            'salida',
+            'Venta FIFO',
+            $descontar,
+            $stock_anterior,
+            $stock_nuevo,
+            $venta_id,
+            'ventas'
+
+        ]);
+
+        /* RESTAR PENDIENTE */
+
+        $cantidad_restante -= $descontar;
+    }
 
     /* MOVIMIENTO */
 
