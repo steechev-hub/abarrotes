@@ -61,6 +61,55 @@ foreach($data['productos'] as $p){
         $p['cantidad'],
         $p['id']
     ]);
+
+    /* STOCK ACTUAL */
+
+    $stock_actual = $conexion->prepare("
+    SELECT stock
+    FROM productos
+    WHERE id = ?
+    ");
+
+    $stock_actual->execute([$p['id']]);
+
+    $actual = $stock_actual->fetch();
+
+    $stock_nuevo = $actual['stock'];
+
+    /* STOCK ANTERIOR */
+
+    $stock_anterior =
+        $stock_nuevo + $p['cantidad'];
+
+    /* MOVIMIENTO */
+
+    $mov = $conexion->prepare("
+    INSERT INTO movimientos_inventario
+    (
+        producto_id,
+        tipo,
+        motivo,
+        cantidad,
+        stock_anterior,
+        stock_nuevo,
+        referencia_id,
+        referencia_tabla
+    )
+    VALUES(?,?,?,?,?,?,?,?)
+    ");
+
+    $mov->execute([
+
+        $p['id'],
+        'salida',
+        'Venta realizada',
+        $p['cantidad'],
+        $stock_anterior,
+        $stock_nuevo,
+        $venta_id,
+        'ventas'
+    ]);
+
 }
 
 /* RESPUESTA */
