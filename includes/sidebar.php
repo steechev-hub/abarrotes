@@ -10,6 +10,7 @@
         <a href="/surtete/productos/index.php">📦 Productos</a>
         <a href="/surtete/proveedores/proveedores.php">🚚 Proveedores</a>
         <a href="/surtete/compras/crear.php">📥 Compras</a>
+        <a href="/surtete/compras/index.php">📥 Cuentas por pagar</a>
         <a href="#">📊 Reportes</a>
 
         <?php if($_SESSION['rol'] == 'admin'): ?>

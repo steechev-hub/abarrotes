@@ -8,7 +8,8 @@ include("../config/db.php");
 $data = json_decode(file_get_contents("php://input"), true);
 
 $proveedor_id = $data['proveedor_id'];
-
+$tipo_pago = $data['tipo_pago'] ?? 'contado';
+$pagado = $data['pagado'] ?? 0;
 $productos = $data['productos'];
 
 $total = 0;
@@ -22,27 +23,76 @@ foreach($productos as $p){
 
 /* GUARDAR COMPRA */
 
+$saldo = $total - $pagado;
+
+$estado_pago = 'pendiente';
+
+if($saldo <= 0){
+
+    $estado_pago = 'pagado';
+
+} elseif($pagado > 0){
+
+    $estado_pago = 'parcial';
+}
+
 $stmt = $conexion->prepare("
 INSERT INTO compras
 (
     proveedor_id,
     fecha,
     total,
+    pagado,
+    saldo,
+    tipo_pago,
+    estado_pago,
     estado
 )
 VALUES
 (
-    ?, NOW(), ?, 'recibido'
+    ?, NOW(), ?, ?, ?, ?, ?, 'recibido'
 )
 ");
 
 $stmt->execute([
+
     $proveedor_id,
-    $total
+    $total,
+    $pagado,
+    $saldo,
+    $tipo_pago,
+    $estado_pago
+
 ]);
 
 $compra_id = $conexion->lastInsertId();
 
+/* PRIMER PAGO */
+
+if($pagado > 0){
+
+    $pago = $conexion->prepare("
+    INSERT INTO pagos_proveedor
+    (
+        compra_id,
+        proveedor_id,
+        monto,
+        metodo_pago,
+        observaciones
+    )
+    VALUES(?,?,?,?,?)
+    ");
+
+    $pago->execute([
+
+        $compra_id,
+        $proveedor_id,
+        $pagado,
+        'efectivo',
+        'Pago inicial compra'
+
+    ]);
+}
 /* RECORRER PRODUCTOS */
 
 foreach($productos as $p){

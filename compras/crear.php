@@ -112,6 +112,33 @@ table td{
 
 <hr><br>
 
+<h3>💰 Pago</h3>
+
+<label>Tipo de pago</label>
+
+<select id="tipo_pago">
+
+    <option value="contado">
+        Contado
+    </option>
+
+    <option value="credito">
+        Crédito
+    </option>
+
+</select>
+
+<label>💵 Pago inicial</label>
+
+<input
+type="number"
+id="pagado"
+placeholder="0.00"
+step="0.01"
+value="0">
+
+<hr><br>
+
 <h3>Agregar Producto</h3>
 
 <select id="producto">
@@ -272,6 +299,14 @@ function guardarCompra(){
     let proveedor_id =
         document.getElementById("proveedor").value;
 
+    let tipo_pago =
+        document.getElementById("tipo_pago").value;
+
+    let pagado =
+        parseFloat(
+            document.getElementById("pagado").value
+        ) || 0;
+
     if(!proveedor_id){
 
         alert("Selecciona proveedor");
@@ -297,19 +332,37 @@ function guardarCompra(){
         body: JSON.stringify({
 
             proveedor_id,
+            tipo_pago,
+            pagado,
             productos: compra
 
         })
 
     })
 
-    .then(res => res.text())
+    .then(res => res.json())
 
     .then(resp => {
 
-        alert("Compra guardada");
+        if(resp.ok){
 
-        location.reload();
+            alert("Compra guardada correctamente");
+
+            location.reload();
+
+        } else {
+
+            alert("Error al guardar");
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Error del sistema");
 
     });
 
