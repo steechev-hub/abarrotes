@@ -53,7 +53,7 @@ foreach($data['productos'] as $p){
 
     $update = $conexion->prepare("
     UPDATE productos
-    SET stock = stock - ?
+    SET stock_general = stock_general - ?
     WHERE id = ?
     ");
 

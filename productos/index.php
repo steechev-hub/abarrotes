@@ -21,7 +21,7 @@ $productos = $stmt->fetchAll();
 $stmt_stock = $conexion->query("
     SELECT COUNT(*) AS total
     FROM productos
-    WHERE stock <= 5
+    WHERE stock_general <= 5
 ");
 
 $stock_bajo = $stmt_stock->fetch()['total'];
@@ -173,7 +173,7 @@ table td{
 <?php
 
 $criticos = $conexion->query("
-SELECT nombre, stock
+SELECT nombre, stock_general
 FROM productos
 WHERE stock <= 5
 LIMIT 5
