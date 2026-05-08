@@ -35,7 +35,7 @@ if(!isset($_SESSION['usuario'])){
             <p>Administrar inventario</p>
         </div>
 
-        <div class="pos-btn" onclick="location.href='../proveedores/index.php'">
+        <div class="pos-btn" onclick="location.href='./proveedores/proveedores.php'">
             <h3>🚚 Proveedores</h3>
             <p>Control de proveedores</p>
         </div>

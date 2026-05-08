@@ -7,7 +7,7 @@ if(!isset($_SESSION['usuario'])){
     exit();
 }
 
-$sql = "SELECT * FROM proveedores WHERE activo = 1 ORDER BY id DESC";
+$sql = "SELECT * FROM proveedores ORDER BY id DESC";;
 $stmt = $conexion->query($sql);
 $proveedores = $stmt->fetchAll();
 ?>
