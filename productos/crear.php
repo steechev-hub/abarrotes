@@ -50,11 +50,19 @@ input, select{
 
 <div class="main">
 
-<?php include("../includes/topbar.php"); ?>
+<?php include("../includes/topbar.php"); 
+
+$categorias = $conexion->query("
+SELECT * FROM categorias
+ORDER BY nombre ASC
+")->fetchAll();
+?>
 
 <div class="form-container">
 
 <h2>➕ Nuevo producto</h2>
+
+
 
 <form action="guardar.php" method="POST">
 
@@ -86,17 +94,25 @@ input, select{
     <div class="form-group">
         <label>Categoría</label>
 
-        <select name="categoria_id">
+        <label>Categoría</label>
 
-            <?php foreach($categorias as $c): ?>
+<select name="categoria_id" required>
 
-                <option value="<?php echo $c['id']; ?>">
-                    <?php echo $c['nombre']; ?>
-                </option>
+    <option value="">
+        Seleccionar categoría
+    </option>
 
-            <?php endforeach; ?>
+    <?php foreach($categorias as $c): ?>
 
-        </select>
+        <option value="<?php echo $c['id']; ?>">
+
+            <?php echo $c['nombre']; ?>
+
+        </option>
+
+    <?php endforeach; ?>
+
+</select>
     </div>
 
     <button class="btn">

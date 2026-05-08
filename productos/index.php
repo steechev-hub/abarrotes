@@ -21,7 +21,7 @@ $productos = $stmt->fetchAll();
 $stmt_stock = $conexion->query("
     SELECT COUNT(*) AS total
     FROM productos
-    WHERE stock_general <= 5
+    WHERE stock <= 5
 ");
 
 $stock_bajo = $stmt_stock->fetch()['total'];
@@ -152,6 +152,10 @@ table td{
     margin:8px 0;
     color:#555;
 }
+table th,
+table td{
+    text-align:center;
+}
 </style>
 </head>
 <body>
@@ -173,12 +177,17 @@ table td{
 <?php
 
 $criticos = $conexion->query("
-SELECT nombre, stock_general
+SELECT nombre, stock
 FROM productos
 WHERE stock <= 5
 LIMIT 5
 ")->fetchAll();
 
+
+$categorias = $conexion->query("
+SELECT * FROM categorias
+ORDER BY nombre ASC
+")->fetchAll();
 ?>
 
 <?php if(count($criticos) > 0): ?>
@@ -215,12 +224,22 @@ LIMIT 5
     </div>
 
     <div class="top-actions">
-        <h2>📦 Productos</h2>
+
+    <h2>📦 Productos</h2>
+
+    <div style="display:flex; gap:10px;">
+
+        <a href="../categorias/index.php" class="btn">
+            🗂️ Categorías
+        </a>
 
         <a href="crear.php" class="btn">
             ➕ Nuevo producto
         </a>
+
     </div>
+
+</div>
 
     <table>
 
