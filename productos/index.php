@@ -24,6 +24,19 @@ $stmt_stock = $conexion->query("
     WHERE stock <= 5
 ");
 
+$caducados = $conexion->query("
+SELECT
+productos.nombre,
+lotes.fecha_caducidad,
+lotes.stock
+FROM lotes
+INNER JOIN productos
+ON lotes.producto_id = productos.id
+WHERE lotes.fecha_caducidad <= DATE_ADD(NOW(), INTERVAL 30 DAY)
+AND lotes.stock > 0
+ORDER BY lotes.fecha_caducidad ASC
+")->fetchAll();
+
 $stock_bajo = $stmt_stock->fetch()['total'];
 ?>
 
@@ -244,27 +257,11 @@ LIMIT 5
             <tr>
 
                 <td><?php echo $p['id']; ?></td>
-
-                <td>
-                    <?php echo $p['codigo_barras']; ?>
-                </td>
-
-                <td>
-                    <?php echo $p['nombre']; ?>
-                </td>
-
-                <td>
-                    <?php echo $p['categoria']; ?>
-                </td>
-
-                <td>
-                    $<?php echo $p['precio_compra']; ?>
-                </td>
-
-                <td>
-                    $<?php echo $p['precio_venta']; ?>
-                </td>
-
+                <td><?php echo $p['codigo_barras']; ?></td>
+                <td><?php echo $p['nombre']; ?></td>
+                <td><?php echo $p['categoria']; ?></td>
+                <td>$<?php echo $p['precio_compra']; ?></td>
+                <td>$<?php echo $p['precio_venta']; ?></td>
                 <?php
 
                 $clase = 'normal';
@@ -283,21 +280,39 @@ LIMIT 5
                 </td>
 
                 <td class="acciones">
-
-                    <a href="editar.php?id=<?php echo $p['id']; ?>">
-                        ✏️
-                    </a>
-
-                    <a href="eliminar.php?id=<?php echo $p['id']; ?>"
-                       onclick="return confirm('¿Eliminar producto?')">
-                        🗑️
-                    </a>
-
+                    <a href="editar.php?id=<?php echo $p['id']; ?>">✏️</a>
+                    <a href="eliminar.php?id=<?php echo $p['id']; ?>"onclick="return confirm('¿Eliminar producto?')">🗑️</a>
                 </td>
 
             </tr>
 
         <?php endforeach; ?>
+
+        <?php if(count($caducados) > 0): ?>
+
+            <div class="card-alerta">
+
+            <h3>⚠️ Productos próximos a caducar</h3>
+
+            <?php foreach($caducados as $c): ?>
+
+            <p>
+
+            • <?php echo $c['nombre']; ?>
+
+            | Caduca:
+            <?php echo $c['fecha_caducidad']; ?>
+
+            | Stock:
+            <?php echo $c['stock']; ?>
+
+            </p>
+
+            <?php endforeach; ?>
+
+            </div>
+
+            <?php endif; ?>
 
         </tbody>
 
