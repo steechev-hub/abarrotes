@@ -61,15 +61,7 @@ input{
 
 <div class="main">
 
-<?php include("../includes/topbar.php"); 
-
-$categorias = $conexion->query("
-SELECT * FROM categorias
-WHERE activo = 1
-ORDER BY nombre ASC
-")->fetchAll();
-
-?>
+<?php include("../includes/topbar.php"); ?>
 
 <div class="form-container">
 

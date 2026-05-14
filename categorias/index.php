@@ -7,8 +7,10 @@ if(!isset($_SESSION['usuario'])){
     exit();
 }
 
-$sql = "SELECT * FROM categorias WHERE activo = 1 ORDER BY id DESC";
+$sql = "SELECT * FROM categorias ORDER BY id DESC";
+
 $stmt = $conexion->query($sql);
+
 $categorias = $stmt->fetchAll();
 ?>
 
@@ -75,13 +77,7 @@ table td{
 
 <div class="main">
 
-<?php include("../includes/topbar.php"); 
-$categorias = $conexion->query("
-SELECT * FROM categorias
-ORDER BY nombre ASC
-")->fetchAll();
-
-?>
+<?php include("../includes/topbar.php"); ?>
 
 <div class="table-container">
 
