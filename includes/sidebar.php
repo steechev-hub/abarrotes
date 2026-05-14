@@ -12,6 +12,8 @@
         <a href="/surtete/compras/crear.php">📥 Compras</a>
         <a href="/surtete/compras/index.php">📥 Cuentas por pagar</a>
         <a href="#">📊 Reportes</a>
+        <a href="/surtete/ventas/historial_tickets.php">🧾 Historial de tickets</a>
+        
 
         <?php if($_SESSION['rol'] == 'admin'): ?>
             <a href="#">⚙️ Configuración</a>

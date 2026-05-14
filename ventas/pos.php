@@ -6,114 +6,253 @@
 <title>Punto de Venta</title>
 
 <style>
-body {
-    font-family: Arial;
-    background: #f4f6f9;
-    margin: 0;
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-.container {
-    display: flex;
-    height: 100vh;
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#eef4ff;
+    overflow:hidden;
 }
 
-.left {
-    width: 65%;
-    padding: 20px;
+/* CONTENEDOR */
+
+.container{
+    display:flex;
+    height:100vh;
 }
 
-.right {
-    width: 35%;
-    background: #1e1e2f;
-    color: white;
-    padding: 20px;
+/* IZQUIERDA */
+
+.left{
+    width:70%;
+    padding:25px;
+    overflow:auto;
 }
 
-input {
-    width: 100%;
-    padding: 15px;
-    font-size: 18px;
+/* HEADER */
+
+.topbar{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.05);
 }
 
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
+.topbar h2{
+    color:#0d3b66;
 }
 
-table th, table td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+.fecha{
+    color:#666;
+    font-weight:bold;
 }
 
-.total {
-    font-size: 28px;
-    margin-top: 20px;
+/* ESCANEO */
+
+.scan-box{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom:20px;
 }
 
-.btn {
-    padding: 15px;
-    width: 100%;
-    border: none;
-    font-size: 18px;
-    margin-top: 10px;
-    cursor: pointer;
-}
-
-.pagar {
-    background: #28a745;
-    color: white;
-}
-
-.cancelar {
-    background: #dc3545;
-    color: white;
-}
 #codigo{
     width:100%;
     padding:18px;
-    font-size:22px;
     border-radius:15px;
     border:2px solid #55ccf0;
+    font-size:22px;
     outline:none;
     transition:.2s;
-    background:white;
 }
 
 #codigo:focus{
     border-color:#0d6efd;
     box-shadow:0 0 10px rgba(13,110,253,0.2);
 }
-.pago-box,
-.cambio-box{
+
+/* TABLA */
+
+.table-box{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th{
+    background:#55ccf0;
+    color:#0d3b66;
+    padding:15px;
+    font-size:15px;
+}
+
+table td{
+    padding:14px;
+    border-bottom:1px solid #eee;
+}
+
+/* DERECHA */
+
+.right{
+    width:30%;
+    background:#0d3b66;
+    color:white;
+    padding:25px;
+    display:flex;
+    flex-direction:column;
+}
+
+/* TOTAL */
+
+.total-box{
+    background:white;
+    color:#0d3b66;
+    padding:25px;
+    border-radius:20px;
+    text-align:center;
+}
+
+.total-box h1{
+    font-size:50px;
+}
+
+/* INPUTS */
+
+.input-group{
     margin-top:20px;
 }
 
-.pago-box label,
-.cambio-box label{
+.input-group label{
     display:block;
     margin-bottom:8px;
-    font-size:16px;
+    font-weight:bold;
 }
 
 #recibido{
     width:100%;
     padding:15px;
-    font-size:22px;
     border:none;
-    border-radius:12px;
+    border-radius:15px;
+    font-size:22px;
     outline:none;
 }
 
-#cambio{
+/* CAMBIO */
+
+.cambio{
+    margin-top:20px;
     background:white;
     color:#0d6efd;
-    padding:15px;
-    border-radius:12px;
-    font-size:28px;
-    font-weight:bold;
+    padding:20px;
+    border-radius:20px;
     text-align:center;
 }
+
+.cambio h1{
+    font-size:42px;
+}
+
+/* BOTONES */
+
+.botones{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.btn{
+    border:none;
+    padding:15px;
+    border-radius:15px;
+    font-size:16px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+.pagar{
+    background:#28c76f;
+    color:white;
+}
+
+.cancelar{
+    background:#ea5455;
+    color:white;
+}
+
+.ticket{
+    background:#55ccf0;
+    color:#0d3b66;
+}
+
+.buscar{
+    background:#ffffff;
+    color:#0d3b66;
+}
+
+/* ACCIONES RAPIDAS */
+
+.quick-actions{
+    margin-top:25px;
+}
+
+.quick-actions h3{
+    margin-bottom:15px;
+}
+
+.quick-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.quick-btn{
+    background:rgba(255,255,255,0.1);
+    border:none;
+    color:white;
+    padding:20px;
+    border-radius:15px;
+    cursor:pointer;
+    font-size:15px;
+    transition:.2s;
+}
+
+.quick-btn:hover{
+    background:rgba(255,255,255,0.2);
+}
+
+/* SCROLL */
+
+.left::-webkit-scrollbar{
+    width:8px;
+}
+
+.left::-webkit-scrollbar-thumb{
+    background:#55ccf0;
+    border-radius:10px;
+}
+
 </style>
 </head>
 
@@ -122,103 +261,169 @@ table th, table td {
 <div class="container">
 
     <!-- IZQUIERDA -->
+
     <div class="left">
-        <h2>Escanear producto</h2>
 
-        <input type="text" id="codigo" placeholder="Escanea código de barras" autofocus autocomplete="off">
+        <div class="topbar">
 
-        <table id="tabla">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                    <th>Cant</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+            <h2>🛒 Punto de Venta</h2>
+
+            <div class="fecha">
+                <?php echo date("d/m/Y H:i"); ?>
+            </div>
+
+        </div>
+
+        <div class="scan-box">
+
+            <input
+            type="text"
+            id="codigo"
+            placeholder="🔍 Escanea o escribe código de barras"
+            autofocus
+            autocomplete="off">
+
+        </div>
+
+        <div class="table-box">
+
+            <table id="tabla">
+
+                <thead>
+
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cant</th>
+                        <th>Subtotal</th>
+                    </tr>
+
+                </thead>
+
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+
     </div>
 
     <!-- DERECHA -->
+
     <div class="right">
-        <h2>Total</h2>
-        <div class="total" id="total">$0.00</div>
 
-        <div class="pago-box">
+        <div class="total-box">
 
-        <label>💵 Dinero recibido</label>
+            <p>TOTAL</p>
 
-        <input type="number"
+            <h1 id="total">$0.00</h1>
+
+        </div>
+
+        <div class="input-group">
+
+            <label>💵 Dinero recibido</label>
+
+            <input
+            type="number"
             id="recibido"
             placeholder="0.00"
             step="0.01">
 
         </div>
 
-        <div class="cambio-box">
+        <div class="cambio">
 
-            <label>💰 Cambio</label>
+            <p>💰 Cambio</p>
 
-            <div id="cambio">$0.00</div>
+            <h1 id="cambio">$0.00</h1>
 
         </div>
 
-        <button class="btn pagar" onclick="pagar()">Pagar</button>
-        <button class="btn cancelar" onclick="cancelar()">Cancelar</button>
+        <!-- BOTONES -->
+
+        <div class="botones">
+
+            <button
+            class="btn pagar"
+            onclick="pagar()">
+            💳 Cobrar
+            </button>
+
+            <button
+            class="btn cancelar"
+            onclick="cancelar()">
+            ❌ Cancelar
+            </button>
+
+            <button
+            class="btn ticket">
+            🧾 Tickets
+            </button>
+
+            <button
+            class="btn buscar">
+            🔎 Buscar
+            </button>
+
+        </div>
+
+        <!-- ACCIONES -->
+
+        <div class="quick-actions">
+
+            <h3>⚡ Acciones rápidas</h3>
+
+            <div class="quick-grid">
+
+                <button class="quick-btn">
+                    📦 Inventario
+                </button>
+
+                <button class="quick-btn">
+                    🚚 Compras
+                </button>
+
+                <button class="quick-btn">
+                    📊 Reportes
+                </button>
+
+                <button class="quick-btn">
+                    💰 Caja
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
-
+/* TU JAVASCRIPT ACTUAL VA AQUÍ */
+/* NO BORRES TU LOGICA */
 <script>
 
 let carrito = [];
 let totalGeneral = 0;
 
-const codigoInput = document.getElementById("codigo");
+const codigoInput =
+    document.getElementById("codigo");
+
+/* FOCUS */
 
 codigoInput.focus();
 
-/* SIEMPRE MANTENER FOCUS */
-let escribiendoPago = false;
+/* =========================
+ESCANEO RAPIDO
+========================= */
 
-/* CUANDO ESCRIBE EN DINERO */
-document.getElementById("recibido")
-.addEventListener("focus", () => {
-
-    escribiendoPago = true;
-
-});
-
-/* CUANDO SALE DEL INPUT */
-document.getElementById("recibido")
-.addEventListener("blur", () => {
-
-    escribiendoPago = false;
-
-    codigoInput.focus();
-
-});
-
-/* MANTENER FOCUS SOLO SI NO ESTA ESCRIBIENDO */
-document.addEventListener("click", (e) => {
-
-    if(!escribiendoPago &&
-       e.target.id !== "recibido"){
-
-        codigoInput.focus();
-    }
-
-});
-
-/* ESCANEO RAPIDO */
 codigoInput.addEventListener("keypress", function(e){
 
     if(e.key === "Enter"){
 
         let codigo = this.value.trim();
 
-        if(codigo === ''){
+        if(codigo == ""){
             return;
         }
 
@@ -232,18 +437,26 @@ codigoInput.addEventListener("keypress", function(e){
 
             if(data.error){
 
-                alert("Producto no encontrado");
+                alert("❌ Producto no encontrado");
 
                 return;
             }
 
-            /* SONIDO */
-            document.getElementById("beep").play();
+            document
+            .getElementById("beep")
+            .play();
 
             agregarProducto(data);
 
-            /* REGRESAR FOCUS */
             codigoInput.focus();
+
+        })
+
+        .catch(error => {
+
+            console.log(error);
+
+            alert("Error al buscar producto");
 
         });
 
@@ -251,17 +464,20 @@ codigoInput.addEventListener("keypress", function(e){
 
 });
 
-/* AGREGAR PRODUCTOS */
+/* =========================
+AGREGAR PRODUCTO
+========================= */
 
 function agregarProducto(producto){
 
-    let existente = carrito.find(p => p.id == producto.id);
+    let existente =
+        carrito.find(p => p.id == producto.id);
 
     if(existente){
 
         existente.cantidad++;
 
-    } else {
+    }else{
 
         producto.cantidad = 1;
 
@@ -269,43 +485,105 @@ function agregarProducto(producto){
     }
 
     render();
+
 }
 
-/* RENDER */
+/* =========================
+RENDER TABLA
+========================= */
 
 function render(){
 
-    let tbody = document.querySelector("#tabla tbody");
+    let tbody =
+        document.querySelector("#tabla tbody");
 
     tbody.innerHTML = "";
 
     let total = 0;
 
-    carrito.forEach(p => {
+    carrito.forEach((p,index) => {
 
-        let subtotal = p.precio_venta * p.cantidad;
+        let subtotal =
+            p.precio_venta * p.cantidad;
 
         total += subtotal;
 
         tbody.innerHTML += `
         <tr>
+
             <td>${p.nombre}</td>
-            <td>$${parseFloat(p.precio_venta).toFixed(2)}</td>
-            <td>${p.cantidad}</td>
-            <td>$${subtotal.toFixed(2)}</td>
+
+            <td>
+                $${parseFloat(
+                    p.precio_venta
+                ).toFixed(2)}
+            </td>
+
+            <td>
+
+                <button onclick="restar(${index})">
+                ➖
+                </button>
+
+                ${p.cantidad}
+
+                <button onclick="sumar(${index})">
+                ➕
+                </button>
+
+            </td>
+
+            <td>
+                $${subtotal.toFixed(2)}
+            </td>
+
         </tr>
         `;
     });
 
-    document.getElementById("total").innerText =
-        "$" + total.toFixed(2);
-
     totalGeneral = total;
 
+    document.getElementById("total")
+    .innerHTML =
+        "$" + total.toFixed(2);
+
     calcularCambio();
+
 }
 
-/* CAMBIO AUTOMATICO */
+/* =========================
+SUMAR
+========================= */
+
+function sumar(index){
+
+    carrito[index].cantidad++;
+
+    render();
+
+}
+
+/* =========================
+RESTAR
+========================= */
+
+function restar(index){
+
+    carrito[index].cantidad--;
+
+    if(carrito[index].cantidad <= 0){
+
+        carrito.splice(index,1);
+
+    }
+
+    render();
+
+}
+
+/* =========================
+CAMBIO
+========================= */
 
 document.getElementById("recibido")
 .addEventListener("input", calcularCambio);
@@ -313,60 +591,76 @@ document.getElementById("recibido")
 function calcularCambio(){
 
     let recibido =
-        parseFloat(document.getElementById("recibido").value) || 0;
+        parseFloat(
+            document.getElementById("recibido").value
+        ) || 0;
 
-    let cambio = recibido - totalGeneral;
+    let cambio =
+        recibido - totalGeneral;
 
     if(cambio < 0){
 
-        document.getElementById("cambio").innerHTML =
-            "Falta $" + Math.abs(cambio).toFixed(2);
+        document.getElementById("cambio")
+        .innerHTML =
+        "Falta $" +
+        Math.abs(cambio).toFixed(2);
 
-        document.getElementById("cambio").style.color = "red";
+        document.getElementById("cambio")
+        .style.color = "red";
 
-    } else {
+    }else{
 
-        document.getElementById("cambio").innerHTML =
-            "$" + cambio.toFixed(2);
+        document.getElementById("cambio")
+        .innerHTML =
+        "$" + cambio.toFixed(2);
 
-        document.getElementById("cambio").style.color =
-            "#0d6efd";
+        document.getElementById("cambio")
+        .style.color = "#28c76f";
+
     }
 
 }
 
-/* PAGAR */
+/* =========================
+PAGAR
+========================= */
 
 function pagar(){
 
-    if(carrito.length === 0){
+    if(carrito.length <= 0){
 
-        alert("No hay productos");
+        alert("❌ No hay productos");
 
         return;
+
     }
 
     let recibido =
-        parseFloat(document.getElementById("recibido").value) || 0;
+        parseFloat(
+            document.getElementById("recibido").value
+        ) || 0;
 
     if(recibido < totalGeneral){
 
-        alert("Dinero insuficiente");
+        alert("❌ Dinero insuficiente");
 
         return;
+
     }
 
     fetch("procesar_venta.php", {
 
-        method: "POST",
+        method:"POST",
 
-        headers: {
-            'Content-Type': 'application/json'
+        headers:{
+            "Content-Type":"application/json"
         },
 
         body: JSON.stringify({
+
             productos: carrito,
             recibido: recibido
+
         })
 
     })
@@ -375,26 +669,52 @@ function pagar(){
 
     .then(resp => {
 
-        window.open(
-            "ticket.php?id=" + resp.venta_id,
-            "_blank"
-        );
+        if(resp.ok){
 
-        carrito = [];
+            alert("✅ Venta realizada");
 
-        render();
+            /* ABRIR TICKET */
 
-        document.getElementById("recibido").value = "";
+            window.open(
+                "ticket.php?id=" + resp.venta_id,
+                "_blank"
+            );
 
-        document.getElementById("cambio").innerHTML = "$0.00";
+            carrito = [];
 
-        codigoInput.focus();
+            render();
+
+            document
+            .getElementById("recibido")
+            .value = "";
+
+            document
+            .getElementById("cambio")
+            .innerHTML = "$0.00";
+
+            codigoInput.focus();
+
+        }else{
+
+            alert("Error al guardar venta");
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+
+        alert("Error servidor");
 
     });
 
 }
 
-/* CANCELAR */
+/* =========================
+CANCELAR
+========================= */
 
 function cancelar(){
 
@@ -402,12 +722,81 @@ function cancelar(){
 
     render();
 
-    document.getElementById("recibido").value = "";
+    document
+    .getElementById("recibido")
+    .value = "";
 
-    document.getElementById("cambio").innerHTML = "$0.00";
+    document
+    .getElementById("cambio")
+    .innerHTML = "$0.00";
 
-    codigoInput.focus();
 }
+
+/* =========================
+BOTON TICKETS
+========================= */
+
+document.querySelector(".ticket")
+.addEventListener("click", () => {
+
+    window.location.href =
+    "../ventas/historial_tickets.php";
+
+});
+
+/* =========================
+BOTON BUSCAR
+========================= */
+
+document.querySelector(".buscar")
+.addEventListener("click", () => {
+
+    let codigo =
+        prompt("Buscar código:");
+
+    if(codigo){
+
+        document
+        .getElementById("codigo")
+        .value = codigo;
+
+        let evento =
+            new KeyboardEvent("keypress", {
+                key:"Enter"
+            });
+
+        codigoInput.dispatchEvent(evento);
+
+    }
+
+});
+
+/* =========================
+BOTONES RAPIDOS
+========================= */
+
+let quickBtns =
+    document.querySelectorAll(".quick-btn");
+
+quickBtns[0].onclick = () => {
+    window.location.href =
+    "../productos/";
+};
+
+quickBtns[1].onclick = () => {
+    window.location.href =
+    "../compras/";
+};
+
+quickBtns[2].onclick = () => {
+    window.location.href =
+    "../reportes/";
+};
+
+quickBtns[3].onclick = () => {
+    window.location.href =
+    "../caja/";
+};
 
 </script>
 

@@ -30,17 +30,17 @@ if(!isset($_SESSION['usuario'])){
 
     <div class="cards">
 
-        <div class="card">
+        <div class="card" onclick="location.href='./productos/index.php'">
             <h3>📦 Productos</h3>
             <p>Administrar inventario</p>
         </div>
 
-        <div class="pos-btn" onclick="location.href='./proveedores/proveedores.php'">
+        <div class="card" onclick="location.href='./proveedores/proveedores.php'">
             <h3>🚚 Proveedores</h3>
             <p>Control de proveedores</p>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="location.href='./compras/index.php'">
             <h3>📥 Compras</h3>
             <p>Entradas de mercancía</p>
         </div>
@@ -48,6 +48,11 @@ if(!isset($_SESSION['usuario'])){
         <div class="card">
             <h3>📊 Reportes</h3>
             <p>Ventas y estadísticas</p>
+        </div>
+
+        <div class="card" onclick="location.href='./ventas/historial_tickets.php'">
+            <h3>🧾 Historial de tickets</h3>
+            <p>tickets</p>
         </div>
 
     </div>

@@ -2,6 +2,11 @@
 session_start();
 include("../config/db.php");
 
+if(!isset($_SESSION['usuario'])){
+    header("Location: ../auth/login.php");
+    exit();
+}
+
 $sql = "SELECT * FROM categorias WHERE activo = 1 ORDER BY id DESC";
 $stmt = $conexion->query($sql);
 $categorias = $stmt->fetchAll();

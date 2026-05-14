@@ -1,9 +1,16 @@
 <?php
+header('Content-Type: application/json');
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 include("../config/db.php");
 
 $data = json_decode(file_get_contents("php://input"), true);
 
 $total = 0;
+
+/* CALCULAR TOTAL */
 
 foreach($data['productos'] as $p){
 
@@ -13,40 +20,61 @@ foreach($data['productos'] as $p){
 $recibido = $data['recibido'];
 $cambio = $recibido - $total;
 
-/* GUARDAR VENTA */
+/* =========================
+GUARDAR VENTA
+========================= */
 
 $stmt = $conexion->prepare("
-INSERT INTO ventas(total, recibido, cambio)
+INSERT INTO ventas
+(
+    total,
+    recibido,
+    cambio
+)
 VALUES(?,?,?)
 ");
 
 $stmt->execute([
+
     $total,
     $recibido,
     $cambio
+
 ]);
 
 $venta_id = $conexion->lastInsertId();
 
-/* GUARDAR DETALLE */
+/* =========================
+GUARDAR DETALLE
+========================= */
 
 foreach($data['productos'] as $p){
 
     $subtotal =
         $p['precio_venta'] * $p['cantidad'];
 
-    $stmt = $conexion->prepare("
+    /* DETALLE VENTA */
+
+    $detalle = $conexion->prepare("
     INSERT INTO detalle_venta
-    (venta_id, producto_id, cantidad, precio, subtotal)
+    (
+        venta_id,
+        producto_id,
+        cantidad,
+        precio,
+        subtotal
+    )
     VALUES(?,?,?,?,?)
     ");
 
-    $stmt->execute([
+    $detalle->execute([
+
         $venta_id,
         $p['id'],
         $p['cantidad'],
         $p['precio_venta'],
         $subtotal
+
     ]);
 
     /* =========================
@@ -55,7 +83,7 @@ foreach($data['productos'] as $p){
 
     $cantidad_restante = $p['cantidad'];
 
-    /* OBTENER LOTES MAS VIEJOS */
+    /* OBTENER LOTES */
 
     $lotes = $conexion->prepare("
     SELECT *
@@ -71,6 +99,22 @@ foreach($data['productos'] as $p){
 
     $lotes = $lotes->fetchAll();
 
+    /* STOCK ACTUAL PRODUCTO */
+
+    $stockActual = $conexion->prepare("
+    SELECT stock
+    FROM productos
+    WHERE id = ?
+    ");
+
+    $stockActual->execute([
+        $p['id']
+    ]);
+
+    $actual = $stockActual->fetch();
+
+    $stock_anterior = $actual['stock'];
+
     /* RECORRER LOTES */
 
     foreach($lotes as $lote){
@@ -81,7 +125,7 @@ foreach($data['productos'] as $p){
 
         $stock_lote = $lote['stock'];
 
-        /* CUANTO DESCONTAR */
+        /* DESCONTAR */
 
         $descontar =
             min($cantidad_restante, $stock_lote);
@@ -100,71 +144,9 @@ foreach($data['productos'] as $p){
         ");
 
         $updateLote->execute([
+
             $nuevo_stock_lote,
             $lote['id']
-        ]);
-
-        /* STOCK GENERAL */
-
-        $stockActual = $conexion->prepare("
-        SELECT stock
-        FROM productos
-        WHERE id = ?
-        ");
-
-        $stockActual->execute([
-            $p['id']
-        ]);
-
-        $actual = $stockActual->fetch();
-
-        $stock_anterior = $actual['stock'];
-
-        $stock_nuevo =
-            $stock_anterior - $descontar;
-
-        /* DESCONTAR STOCK GENERAL */
-
-        $updateProducto = $conexion->prepare("
-        UPDATE productos
-        SET stock = stock - ?
-        WHERE id = ?
-        ");
-
-        $updateProducto->execute([
-            $descontar,
-            $p['id']
-        ]);
-
-        /* MOVIMIENTO INVENTARIO */
-
-        $mov = $conexion->prepare("
-        INSERT INTO movimientos_inventario
-        (
-            producto_id,
-            lote_id,
-            tipo,
-            motivo,
-            cantidad,
-            stock_anterior,
-            stock_nuevo,
-            referencia_id,
-            referencia_tabla
-        )
-        VALUES(?,?,?,?,?,?,?,?,?)
-        ");
-
-        $mov->execute([
-
-            $p['id'],
-            $lote['id'],
-            'salida',
-            'Venta FIFO',
-            $descontar,
-            $stock_anterior,
-            $stock_nuevo,
-            $venta_id,
-            'ventas'
 
         ]);
 
@@ -173,7 +155,27 @@ foreach($data['productos'] as $p){
         $cantidad_restante -= $descontar;
     }
 
-    /* MOVIMIENTO */
+    /* NUEVO STOCK GENERAL */
+
+    $stock_nuevo =
+        $stock_anterior - $p['cantidad'];
+
+    /* ACTUALIZAR STOCK PRODUCTO */
+
+    $updateProducto = $conexion->prepare("
+    UPDATE productos
+    SET stock = ?
+    WHERE id = ?
+    ");
+
+    $updateProducto->execute([
+
+        $stock_nuevo,
+        $p['id']
+
+    ]);
+
+    /* MOVIMIENTO INVENTARIO */
 
     $mov = $conexion->prepare("
     INSERT INTO movimientos_inventario
@@ -200,13 +202,19 @@ foreach($data['productos'] as $p){
         $stock_nuevo,
         $venta_id,
         'ventas'
+
     ]);
 
 }
 
-/* RESPUESTA */
+/* =========================
+RESPUESTA
+========================= */
 
 echo json_encode([
+
     "ok" => true,
     "venta_id" => $venta_id
+
 ]);
+?>

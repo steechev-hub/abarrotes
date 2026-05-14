@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-05-2026 a las 21:53:07
+-- Tiempo de generación: 14-05-2026 a las 19:43:20
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,22 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `pos_abarrotes`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `caja`
+--
+
+CREATE TABLE `caja` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
+  `fecha_apertura` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_cierre` timestamp NULL DEFAULT NULL,
+  `monto_inicial` decimal(10,2) DEFAULT NULL,
+  `monto_final` decimal(10,2) DEFAULT NULL,
+  `estado` enum('abierta','cerrada') DEFAULT 'abierta'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -43,8 +59,27 @@ CREATE TABLE `compras` (
   `proveedor_id` int(11) NOT NULL,
   `fecha` datetime DEFAULT current_timestamp(),
   `total` decimal(10,2) NOT NULL,
-  `estado` enum('pendiente','recibido','pagado') DEFAULT 'pendiente'
+  `estado` enum('pendiente','recibido','pagado') DEFAULT 'pendiente',
+  `subtotal` decimal(10,2) DEFAULT 0.00,
+  `descuento` decimal(10,2) DEFAULT 0.00,
+  `iva` decimal(10,2) DEFAULT 0.00,
+  `pagado` decimal(10,2) DEFAULT 0.00,
+  `saldo` decimal(10,2) DEFAULT 0.00,
+  `tipo_pago` enum('contado','credito') DEFAULT 'contado',
+  `estado_pago` enum('pendiente','parcial','pagado') DEFAULT 'pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `compras`
+--
+
+INSERT INTO `compras` (`id`, `proveedor_id`, `fecha`, `total`, `estado`, `subtotal`, `descuento`, `iva`, `pagado`, `saldo`, `tipo_pago`, `estado_pago`) VALUES
+(1, 7, '2026-05-08 14:27:35', 336.00, 'recibido', 0.00, 0.00, 0.00, 0.00, 0.00, 'contado', 'pendiente'),
+(2, 1, '2026-05-08 14:45:58', 150.00, 'recibido', 0.00, 0.00, 0.00, 0.00, 150.00, 'contado', 'pendiente'),
+(3, 1, '2026-05-08 15:05:07', 75.00, 'recibido', 0.00, 0.00, 0.00, 0.00, 75.00, 'contado', 'pendiente'),
+(4, 1, '2026-05-09 10:38:09', 75.00, 'recibido', 0.00, 0.00, 0.00, 0.00, 75.00, 'contado', 'pendiente'),
+(5, 7, '2026-05-09 10:39:10', 112.00, 'recibido', 0.00, 0.00, 0.00, 112.00, 0.00, 'contado', 'pagado'),
+(6, 1, '2026-05-09 18:36:28', 30.00, 'recibido', 0.00, 0.00, 0.00, 30.00, 0.00, 'contado', 'pagado');
 
 -- --------------------------------------------------------
 
@@ -61,6 +96,18 @@ CREATE TABLE `detalle_compra` (
   `subtotal` decimal(10,2) NOT NULL,
   `fecha_caducidad` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalle_compra`
+--
+
+INSERT INTO `detalle_compra` (`id`, `compra_id`, `producto_id`, `cantidad`, `precio`, `subtotal`, `fecha_caducidad`) VALUES
+(1, 1, 1, 12, 28.00, 336.00, '2026-05-08'),
+(2, 2, 2, 10, 15.00, 150.00, '2026-05-30'),
+(3, 3, 2, 5, 15.00, 75.00, '2026-05-30'),
+(4, 4, 2, 5, 15.00, 75.00, '2026-09-25'),
+(5, 5, 1, 4, 28.00, 112.00, '2026-11-27'),
+(6, 6, 2, 2, 15.00, 30.00, '2026-09-30');
 
 -- --------------------------------------------------------
 
@@ -91,6 +138,17 @@ CREATE TABLE `detalle_venta` (
   `subtotal` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `detalle_venta`
+--
+
+INSERT INTO `detalle_venta` (`id`, `venta_id`, `producto_id`, `cantidad`, `precio`, `subtotal`) VALUES
+(1, 1, 2, 1, 20.00, 20.00),
+(2, 2, 1, 1, 31.00, 31.00),
+(3, 3, 1, 2, 31.00, 62.00),
+(4, 4, 1, 2, 31.00, 62.00),
+(5, 5, 1, 1, 31.00, 31.00);
+
 -- --------------------------------------------------------
 
 --
@@ -105,6 +163,33 @@ CREATE TABLE `lotes` (
   `stock` int(11) DEFAULT 0,
   `costo` decimal(10,2) DEFAULT NULL,
   `fecha_ingreso` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `lotes`
+--
+
+INSERT INTO `lotes` (`id`, `producto_id`, `lote`, `fecha_caducidad`, `stock`, `costo`, `fecha_ingreso`) VALUES
+(1, 1, 'A001', '2026-05-08', 6, 28.00, '2026-05-08 20:27:35'),
+(2, 2, 'A002', '2026-05-30', 9, 15.00, '2026-05-08 20:45:58'),
+(3, 2, 'A002', '2026-05-30', 5, 15.00, '2026-05-08 21:05:07'),
+(4, 2, 'A003', '2026-09-25', 5, 15.00, '2026-05-09 16:38:09'),
+(5, 1, 'A004', '2026-11-27', 4, 28.00, '2026-05-09 16:39:10'),
+(6, 2, 'A005', '2026-09-30', 2, 15.00, '2026-05-10 00:36:28');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mermas`
+--
+
+CREATE TABLE `mermas` (
+  `id` int(11) NOT NULL,
+  `producto_id` int(11) DEFAULT NULL,
+  `lote_id` int(11) DEFAULT NULL,
+  `cantidad` int(11) DEFAULT NULL,
+  `motivo` varchar(255) DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -128,19 +213,47 @@ CREATE TABLE `movimientos_inventario` (
   `fecha` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `movimientos_inventario`
+--
+
+INSERT INTO `movimientos_inventario` (`id`, `producto_id`, `lote_id`, `usuario_id`, `tipo`, `motivo`, `cantidad`, `stock_anterior`, `stock_nuevo`, `referencia_id`, `referencia_tabla`, `fecha`) VALUES
+(1, 1, 1, NULL, 'entrada', 'Compra proveedor', 12, 10, 22, 1, 'compras', '2026-05-08 20:27:35'),
+(2, 2, 2, NULL, 'entrada', 'Compra proveedor', 10, 10, 20, 2, 'compras', '2026-05-08 20:45:59'),
+(3, 2, 3, NULL, 'entrada', 'Compra proveedor', 5, 20, 25, 3, 'compras', '2026-05-08 21:05:07'),
+(4, 2, NULL, NULL, 'salida', 'Venta realizada', 1, 25, 24, 1, 'ventas', '2026-05-09 16:36:53'),
+(5, 2, 4, NULL, 'entrada', 'Compra proveedor', 5, 24, 29, 4, 'compras', '2026-05-09 16:38:09'),
+(6, 1, 5, NULL, 'entrada', 'Compra proveedor', 4, 22, 26, 5, 'compras', '2026-05-09 16:39:10'),
+(7, 1, NULL, NULL, 'salida', 'Venta realizada', 1, 26, 25, 2, 'ventas', '2026-05-09 16:43:25'),
+(8, 1, NULL, NULL, 'salida', 'Venta realizada', 2, 25, 23, 3, 'ventas', '2026-05-09 17:00:03'),
+(9, 1, NULL, NULL, 'salida', 'Venta realizada', 2, 23, 21, 4, 'ventas', '2026-05-10 00:32:29'),
+(10, 2, 6, NULL, 'entrada', 'Compra proveedor', 2, 29, 31, 6, 'compras', '2026-05-10 00:36:28'),
+(11, 1, NULL, NULL, 'salida', 'Venta realizada', 1, 21, 20, 5, 'ventas', '2026-05-10 00:51:42');
+
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `pagos_proveedores`
+-- Estructura de tabla para la tabla `pagos_proveedor`
 --
 
-CREATE TABLE `pagos_proveedores` (
+CREATE TABLE `pagos_proveedor` (
   `id` int(11) NOT NULL,
-  `compra_id` int(11) DEFAULT NULL,
-  `fecha` datetime DEFAULT current_timestamp(),
-  `monto` decimal(10,2) DEFAULT NULL,
-  `metodo_pago` varchar(50) DEFAULT NULL
+  `compra_id` int(11) NOT NULL,
+  `proveedor_id` int(11) NOT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `metodo_pago` varchar(50) DEFAULT NULL,
+  `referencia` varchar(100) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pagos_proveedor`
+--
+
+INSERT INTO `pagos_proveedor` (`id`, `compra_id`, `proveedor_id`, `monto`, `metodo_pago`, `referencia`, `observaciones`, `fecha`) VALUES
+(1, 5, 7, 112.00, 'efectivo', NULL, 'Pago inicial compra', '2026-05-09 16:39:10'),
+(2, 6, 1, 30.00, 'efectivo', NULL, 'Pago inicial compra', '2026-05-10 00:36:28');
 
 -- --------------------------------------------------------
 
@@ -172,6 +285,14 @@ CREATE TABLE `productos` (
   `categoria_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `productos`
+--
+
+INSERT INTO `productos` (`id`, `codigo_barras`, `nombre`, `descripcion`, `precio_compra`, `precio_venta`, `stock`, `categoria_id`) VALUES
+(1, '987654321', 'Lala deslactosada', NULL, 28.00, 31.00, 20, NULL),
+(2, '9876543210', 'Papas adobadas', NULL, 15.00, 20.00, 31, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -198,7 +319,8 @@ INSERT INTO `proveedores` (`id`, `nombre`, `telefono`, `email`, `direccion`, `ac
 (3, 'SABRITAS', '9621172256', 'sabritas@gmail.com', 'av.silvano gatica', 0, '2026-05-06 23:32:38'),
 (4, 'scasd', '2353455', 'sabritas@gmail.com', 'sdcsdcsdcsad', 0, '2026-05-06 23:37:31'),
 (5, 'sdasdsad', '123123123', 'sabritas@gmail.com', 'wedewqwe', 0, '2026-05-06 23:39:36'),
-(6, 'asjkas', '1231231223', 'sabritas@gmail.com', 'dfasdfadsf', 0, '2026-05-07 02:01:23');
+(6, 'asjkas', '1231231223', 'sabritas@gmail.com', 'dfasdfadsf', 0, '2026-05-07 02:01:23'),
+(7, 'Bimbo', '987654321', 'hgsttwb@gmail.com', 'Tapachula', 0, '2026-05-08 19:59:58');
 
 -- --------------------------------------------------------
 
@@ -230,12 +352,33 @@ INSERT INTO `usuarios` (`id`, `nombre`, `usuario`, `password`, `rol`) VALUES
 CREATE TABLE `ventas` (
   `id` int(11) NOT NULL,
   `fecha` datetime DEFAULT current_timestamp(),
-  `total` decimal(10,2) DEFAULT NULL
+  `total` decimal(10,2) DEFAULT NULL,
+  `recibido` decimal(10,2) DEFAULT 0.00,
+  `cambio` decimal(10,2) DEFAULT 0.00,
+  `usuario_id` int(11) DEFAULT NULL,
+  `metodo_pago` varchar(50) DEFAULT 'efectivo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`id`, `fecha`, `total`, `recibido`, `cambio`, `usuario_id`, `metodo_pago`) VALUES
+(1, '2026-05-09 10:36:53', 20.00, 50.00, 30.00, NULL, 'efectivo'),
+(2, '2026-05-09 10:43:25', 31.00, 50.00, 19.00, NULL, 'efectivo'),
+(3, '2026-05-09 11:00:03', 62.00, 100.00, 38.00, NULL, 'efectivo'),
+(4, '2026-05-09 18:32:29', 62.00, 100.00, 38.00, NULL, 'efectivo'),
+(5, '2026-05-09 18:51:42', 31.00, 100.00, 69.00, NULL, 'efectivo');
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `caja`
+--
+ALTER TABLE `caja`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `categorias`
@@ -279,23 +422,30 @@ ALTER TABLE `detalle_venta`
 --
 ALTER TABLE `lotes`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `producto_id` (`producto_id`);
+  ADD KEY `idx_producto` (`producto_id`);
+
+--
+-- Indices de la tabla `mermas`
+--
+ALTER TABLE `mermas`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `movimientos_inventario`
 --
 ALTER TABLE `movimientos_inventario`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `producto_id` (`producto_id`),
   ADD KEY `lote_id` (`lote_id`),
-  ADD KEY `usuario_id` (`usuario_id`);
+  ADD KEY `usuario_id` (`usuario_id`),
+  ADD KEY `fk_mov_producto` (`producto_id`);
 
 --
--- Indices de la tabla `pagos_proveedores`
+-- Indices de la tabla `pagos_proveedor`
 --
-ALTER TABLE `pagos_proveedores`
+ALTER TABLE `pagos_proveedor`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `compra_id` (`compra_id`);
+  ADD KEY `compra_id` (`compra_id`),
+  ADD KEY `proveedor_id` (`proveedor_id`);
 
 --
 -- Indices de la tabla `pedidos`
@@ -310,7 +460,8 @@ ALTER TABLE `pedidos`
 ALTER TABLE `productos`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `codigo_barras` (`codigo_barras`),
-  ADD KEY `categoria_id` (`categoria_id`);
+  ADD KEY `categoria_id` (`categoria_id`),
+  ADD KEY `idx_codigo_barras` (`codigo_barras`);
 
 --
 -- Indices de la tabla `proveedores`
@@ -329,11 +480,18 @@ ALTER TABLE `usuarios`
 -- Indices de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_fecha` (`fecha`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `caja`
+--
+ALTER TABLE `caja`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -345,13 +503,13 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de la tabla `compras`
 --
 ALTER TABLE `compras`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_compra`
 --
 ALTER TABLE `detalle_compra`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
@@ -363,25 +521,31 @@ ALTER TABLE `detalle_pedido`
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `lotes`
 --
 ALTER TABLE `lotes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `mermas`
+--
+ALTER TABLE `mermas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `movimientos_inventario`
 --
 ALTER TABLE `movimientos_inventario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de la tabla `pagos_proveedores`
+-- AUTO_INCREMENT de la tabla `pagos_proveedor`
 --
-ALTER TABLE `pagos_proveedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `pagos_proveedor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos`
@@ -393,13 +557,13 @@ ALTER TABLE `pedidos`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
 --
 ALTER TABLE `proveedores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -411,7 +575,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -431,7 +595,8 @@ ALTER TABLE `detalle_compra`
   ADD CONSTRAINT `detalle_compra_ibfk_1` FOREIGN KEY (`compra_id`) REFERENCES `compras` (`id`),
   ADD CONSTRAINT `detalle_compra_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`),
   ADD CONSTRAINT `detalle_compra_ibfk_3` FOREIGN KEY (`compra_id`) REFERENCES `compras` (`id`),
-  ADD CONSTRAINT `detalle_compra_ibfk_4` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
+  ADD CONSTRAINT `detalle_compra_ibfk_4` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`),
+  ADD CONSTRAINT `fk_detalle_compra` FOREIGN KEY (`compra_id`) REFERENCES `compras` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `detalle_pedido`
@@ -445,27 +610,31 @@ ALTER TABLE `detalle_pedido`
 --
 ALTER TABLE `detalle_venta`
   ADD CONSTRAINT `detalle_venta_ibfk_1` FOREIGN KEY (`venta_id`) REFERENCES `ventas` (`id`),
-  ADD CONSTRAINT `detalle_venta_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
+  ADD CONSTRAINT `detalle_venta_ibfk_2` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`),
+  ADD CONSTRAINT `fk_detalle_venta` FOREIGN KEY (`venta_id`) REFERENCES `ventas` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `lotes`
 --
 ALTER TABLE `lotes`
+  ADD CONSTRAINT `fk_lotes_producto` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `lotes_ibfk_1` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
 
 --
 -- Filtros para la tabla `movimientos_inventario`
 --
 ALTER TABLE `movimientos_inventario`
+  ADD CONSTRAINT `fk_mov_producto` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`),
   ADD CONSTRAINT `movimientos_inventario_ibfk_1` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`),
   ADD CONSTRAINT `movimientos_inventario_ibfk_2` FOREIGN KEY (`lote_id`) REFERENCES `lotes` (`id`),
   ADD CONSTRAINT `movimientos_inventario_ibfk_3` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 --
--- Filtros para la tabla `pagos_proveedores`
+-- Filtros para la tabla `pagos_proveedor`
 --
-ALTER TABLE `pagos_proveedores`
-  ADD CONSTRAINT `pagos_proveedores_ibfk_1` FOREIGN KEY (`compra_id`) REFERENCES `compras` (`id`);
+ALTER TABLE `pagos_proveedor`
+  ADD CONSTRAINT `pagos_proveedor_ibfk_1` FOREIGN KEY (`compra_id`) REFERENCES `compras` (`id`),
+  ADD CONSTRAINT `pagos_proveedor_ibfk_2` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`);
 
 --
 -- Filtros para la tabla `pedidos`
