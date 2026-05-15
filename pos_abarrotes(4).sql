@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-05-2026 a las 19:43:20
+-- Tiempo de generación: 15-05-2026 a las 05:35:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,31 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `pos_abarrotes`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `abonos_compra`
+--
+
+CREATE TABLE `abonos_compra` (
+  `id` int(11) NOT NULL,
+  `compra_id` int(11) NOT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `metodo_pago` varchar(50) DEFAULT 'efectivo',
+  `referencia` varchar(100) DEFAULT NULL,
+  `comentario` text DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `abonos_compra`
+--
+
+INSERT INTO `abonos_compra` (`id`, `compra_id`, `usuario_id`, `monto`, `metodo_pago`, `referencia`, `comentario`, `fecha`) VALUES
+(1, 4, NULL, 40.00, 'Efectivo', NULL, 'se pago casi la mitad de la compra', '2026-05-15 03:28:58'),
+(2, 3, NULL, 35.00, 'Efectivo', NULL, 'se hizo un pago medio', '2026-05-15 03:34:30');
 
 -- --------------------------------------------------------
 
@@ -76,8 +101,8 @@ CREATE TABLE `compras` (
 INSERT INTO `compras` (`id`, `proveedor_id`, `fecha`, `total`, `estado`, `subtotal`, `descuento`, `iva`, `pagado`, `saldo`, `tipo_pago`, `estado_pago`) VALUES
 (1, 7, '2026-05-08 14:27:35', 336.00, 'recibido', 0.00, 0.00, 0.00, 0.00, 0.00, 'contado', 'pendiente'),
 (2, 1, '2026-05-08 14:45:58', 150.00, 'recibido', 0.00, 0.00, 0.00, 0.00, 150.00, 'contado', 'pendiente'),
-(3, 1, '2026-05-08 15:05:07', 75.00, 'recibido', 0.00, 0.00, 0.00, 0.00, 75.00, 'contado', 'pendiente'),
-(4, 1, '2026-05-09 10:38:09', 75.00, 'recibido', 0.00, 0.00, 0.00, 0.00, 75.00, 'contado', 'pendiente'),
+(3, 1, '2026-05-08 15:05:07', 75.00, 'recibido', 0.00, 0.00, 0.00, 35.00, 40.00, 'contado', 'parcial'),
+(4, 1, '2026-05-09 10:38:09', 75.00, 'recibido', 0.00, 0.00, 0.00, 40.00, 35.00, 'contado', 'parcial'),
 (5, 7, '2026-05-09 10:39:10', 112.00, 'recibido', 0.00, 0.00, 0.00, 112.00, 0.00, 'contado', 'pagado'),
 (6, 1, '2026-05-09 18:36:28', 30.00, 'recibido', 0.00, 0.00, 0.00, 30.00, 0.00, 'contado', 'pagado');
 
@@ -305,6 +330,13 @@ CREATE TABLE `proveedores` (
   `telefono` varchar(20) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
   `direccion` text DEFAULT NULL,
+  `empresa_direccion` text DEFAULT NULL,
+  `redes_sociales` text DEFAULT NULL,
+  `vendedor_nombre` varchar(150) DEFAULT NULL,
+  `gerente_nombre` varchar(150) DEFAULT NULL,
+  `vendedor_telefono` varchar(20) DEFAULT NULL,
+  `gerente_telefono` varchar(20) DEFAULT NULL,
+  `empresa_telefono` varchar(20) DEFAULT NULL,
   `activo` tinyint(1) NOT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -313,14 +345,14 @@ CREATE TABLE `proveedores` (
 -- Volcado de datos para la tabla `proveedores`
 --
 
-INSERT INTO `proveedores` (`id`, `nombre`, `telefono`, `email`, `direccion`, `activo`, `fecha_creacion`) VALUES
-(1, 'SABRITAS', '9621172256', 'sabritas@gmail.com', 'Av.silvano gatica', 0, '2026-05-06 23:28:27'),
-(2, 'SABRITAS', '9621172256', 'sabritas@gmail.com', 'av.silvano gatica', 0, '2026-05-06 23:31:06'),
-(3, 'SABRITAS', '9621172256', 'sabritas@gmail.com', 'av.silvano gatica', 0, '2026-05-06 23:32:38'),
-(4, 'scasd', '2353455', 'sabritas@gmail.com', 'sdcsdcsdcsad', 0, '2026-05-06 23:37:31'),
-(5, 'sdasdsad', '123123123', 'sabritas@gmail.com', 'wedewqwe', 0, '2026-05-06 23:39:36'),
-(6, 'asjkas', '1231231223', 'sabritas@gmail.com', 'dfasdfadsf', 0, '2026-05-07 02:01:23'),
-(7, 'Bimbo', '987654321', 'hgsttwb@gmail.com', 'Tapachula', 0, '2026-05-08 19:59:58');
+INSERT INTO `proveedores` (`id`, `nombre`, `telefono`, `email`, `direccion`, `empresa_direccion`, `redes_sociales`, `vendedor_nombre`, `gerente_nombre`, `vendedor_telefono`, `gerente_telefono`, `empresa_telefono`, `activo`, `fecha_creacion`) VALUES
+(1, 'SABRITAS', '9621172256', 'sabritas@gmail.com', 'Av.silvano gatica', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-05-06 23:28:27'),
+(2, 'SABRITAS', '9621172256', 'sabritas@gmail.com', 'av.silvano gatica', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-05-06 23:31:06'),
+(3, 'SABRITAS', '9621172256', 'sabritas@gmail.com', 'av.silvano gatica', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-05-06 23:32:38'),
+(4, 'scasd', '2353455', 'sabritas@gmail.com', 'sdcsdcsdcsad', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-05-06 23:37:31'),
+(5, 'sdasdsad', '123123123', 'sabritas@gmail.com', 'wedewqwe', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-05-06 23:39:36'),
+(6, 'asjkas', '1231231223', 'sabritas@gmail.com', 'dfasdfadsf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-05-07 02:01:23'),
+(7, 'Bimbo', '987654321', 'hgsttwb@gmail.com', 'Tapachula', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-05-08 19:59:58');
 
 -- --------------------------------------------------------
 
@@ -373,6 +405,13 @@ INSERT INTO `ventas` (`id`, `fecha`, `total`, `recibido`, `cambio`, `usuario_id`
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `abonos_compra`
+--
+ALTER TABLE `abonos_compra`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `compra_id` (`compra_id`);
 
 --
 -- Indices de la tabla `caja`
@@ -488,6 +527,12 @@ ALTER TABLE `ventas`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `abonos_compra`
+--
+ALTER TABLE `abonos_compra`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `caja`
 --
 ALTER TABLE `caja`
@@ -580,6 +625,12 @@ ALTER TABLE `ventas`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `abonos_compra`
+--
+ALTER TABLE `abonos_compra`
+  ADD CONSTRAINT `abonos_compra_ibfk_1` FOREIGN KEY (`compra_id`) REFERENCES `compras` (`id`);
 
 --
 -- Filtros para la tabla `compras`
