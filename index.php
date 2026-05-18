@@ -24,7 +24,7 @@ if(!isset($_SESSION['usuario'])){
 
     <?php include("includes/topbar.php"); ?>
 
-    <div class="pos-btn" onclick="location.href='../ventas/pos.php'">
+    <div class="pos-btn" onclick="location.href='./ventas/pos.php'">
         🛒 ABRIR CAJA
     </div>
 
@@ -43,6 +43,11 @@ if(!isset($_SESSION['usuario'])){
         <div class="card" onclick="location.href='./compras/index.php'">
             <h3>📥 Compras</h3>
             <p>Entradas de mercancía</p>
+        </div>
+
+        <div class="card" onclick="location.href='./inventario/index.php'">
+            <h3>📊 Inventario</h3>
+            <p>Movimientos y kardex</p>
         </div>
 
         <div class="card">

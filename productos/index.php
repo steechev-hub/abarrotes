@@ -246,8 +246,8 @@ ORDER BY nombre ASC
             🗂️ Categorías
         </a>
 
-        <a href="crear.php" class="btn">
-            ➕ Nuevo producto
+        <a href="../almacen/index.php" class="btn">
+            🏪 Ir a almacén
         </a>
 
     </div>

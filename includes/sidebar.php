@@ -11,6 +11,9 @@
         <a href="/surtete/proveedores/proveedores.php">🚚 Proveedores</a>
         <a href="/surtete/compras/crear.php">📥 Compras</a>
         <a href="/surtete/compras/index.php">📥 Cuentas por pagar</a>
+        <a href="/surtete/almacen/index.php">📊 Almacen</a>
+        <a href="/surtete/inventario/index.php">📊 Inventario</a>
+        <a href="/surtete/inventario/agregar_movimiento.php">📊 Movimientos de inventario</a>
         <a href="#">📊 Reportes</a>
         <a href="/surtete/ventas/historial_tickets.php">🧾 Historial de tickets</a>
         
