@@ -2,44 +2,47 @@
 session_start();
 include("../config/db.php");
 
+
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     $nombre = $_POST['nombre'];
-    $telefono = $_POST['telefono'];
-    $email = $_POST['email'];
-    $direccion = $_POST['direccion'];
-
-    $empresa_direccion = $_POST['empresa_direccion'];
-    $redes_sociales = $_POST['redes_sociales'];
-
-    $vendedor_nombre = $_POST['vendedor_nombre'];
-    $gerente_nombre = $_POST['gerente_nombre'];
-
-    $vendedor_telefono = $_POST['vendedor_telefono'];
-    $gerente_telefono = $_POST['gerente_telefono'];
 
     $empresa_telefono = $_POST['empresa_telefono'];
 
+    $email = $_POST['email'];
+
+    $empresa_direccion = $_POST['empresa_direccion'];
+
+    $redes_sociales = $_POST['redes_sociales'];
+
+    $vendedor_nombre = $_POST['vendedor_nombre'];
+
+    $vendedor_telefono = $_POST['vendedor_telefono'];
+
+    $gerente_nombre = $_POST['gerente_nombre'];
+
+    $gerente_telefono = $_POST['gerente_telefono'];
+
     $sql = "
+
     INSERT INTO proveedores (
 
-        nombre,
-        telefono,
+        nombre_empresa,
+        empresa_telefono,
         email,
-        direccion,
-
         empresa_direccion,
         redes_sociales,
 
         vendedor_nombre,
-        gerente_nombre,
-
         vendedor_telefono,
-        gerente_telefono,
 
-        empresa_telefono
+        gerente_nombre,
+        gerente_telefono
 
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    )
+
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+
     ";
 
     $stmt = $conexion->prepare($sql);
@@ -47,20 +50,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $stmt->execute([
 
         $nombre,
-        $telefono,
+        $empresa_telefono,
         $email,
-        $direccion,
-
         $empresa_direccion,
         $redes_sociales,
 
         $vendedor_nombre,
-        $gerente_nombre,
-
         $vendedor_telefono,
-        $gerente_telefono,
 
-        $empresa_telefono
+        $gerente_nombre,
+        $gerente_telefono
 
     ]);
 
@@ -89,24 +88,26 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 <form method="POST">
 
-<label>Nombre del proveedor</label>
+<h3>🏢 Información de la empresa</h3>
+
+<label>Nombre de la empresa</label>
 <input type="text" name="nombre" required>
 
-<label>Teléfono general</label>
-<input type="text" name="telefono">
+<label>Teléfono de la empresa</label>
+<input type="text" name="empresa_telefono">
 
 <label>Email</label>
 <input type="email" name="email">
-
-<label>Dirección</label>
-<textarea name="direccion"></textarea>
 
 <label>Dirección de la empresa</label>
 <textarea name="empresa_direccion"></textarea>
 
 <label>Redes sociales</label>
-<textarea name="redes_sociales"
-placeholder="Facebook, Instagram, WhatsApp..."></textarea>
+
+<textarea
+name="redes_sociales"
+placeholder="Facebook, Instagram, WhatsApp..."
+></textarea>
 
 <hr>
 
@@ -128,16 +129,15 @@ placeholder="Facebook, Instagram, WhatsApp..."></textarea>
 <label>Teléfono del gerente</label>
 <input type="text" name="gerente_telefono">
 
-<hr>
-
-<h3>🏢 Empresa</h3>
-
-<label>Teléfono de la empresa</label>
-<input type="text" name="empresa_telefono">
-
 <button type="submit" class="btn">
+
     Guardar proveedor
+
 </button>
+
+<a href="../index.php" class="btn-back">
+                    ⬅ Regresar al menú principal
+</a>
 
 </form>
 
@@ -198,5 +198,20 @@ h3{
     border-radius:12px;
     cursor:pointer;
     font-weight:bold;
+}
+.btn-back{
+    display:inline-block;
+    margin-top:25px;
+    background:#6c757d;
+    color:white;
+    text-decoration:none;
+    padding:10px 10px;
+    border-radius:10px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.btn-back:hover{
+    background:#5a6268;
 }
 </style>

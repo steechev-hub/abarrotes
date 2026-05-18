@@ -12,7 +12,7 @@ if(!isset($_SESSION['usuario'])){
 ========================= */
 
 if(!isset($_GET['id'])){
-    header("Location: index.php");
+    header("Location: proveedores.php");
     exit();
 }
 
@@ -23,13 +23,17 @@ $id = $_GET['id'];
 ========================= */
 
 $sql = "SELECT * FROM proveedores WHERE id = ?";
+
 $stmt = $conexion->prepare($sql);
+
 $stmt->execute([$id]);
 
 $proveedor = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if(!$proveedor){
+
     echo "Proveedor no encontrado";
+
     exit();
 }
 
@@ -39,26 +43,66 @@ if(!$proveedor){
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-    $nombre = $_POST['nombre'];
-    $telefono = $_POST['telefono'];
-    $email = $_POST['email'];
-    $direccion = $_POST['direccion'];
+    $nombre = $_POST['nombre_empresa'];
 
-    $update = "UPDATE proveedores 
-               SET nombre = ?, telefono = ?, email = ?, direccion = ?
-               WHERE id = ?";
+    $empresa_telefono = $_POST['empresa_telefono'];
+
+    $email = $_POST['email'];
+
+    $empresa_direccion = $_POST['empresa_direccion'];
+
+    $redes_sociales = $_POST['redes_sociales'];
+
+    $vendedor_nombre = $_POST['vendedor_nombre'];
+
+    $vendedor_telefono = $_POST['vendedor_telefono'];
+
+    $gerente_nombre = $_POST['gerente_nombre'];
+
+    $gerente_telefono = $_POST['gerente_telefono'];
+
+    $update = "
+
+    UPDATE proveedores SET
+
+        nombre = ?,
+        empresa_telefono = ?,
+        email = ?,
+        empresa_direccion = ?,
+        redes_sociales = ?,
+
+        vendedor_nombre = ?,
+        vendedor_telefono = ?,
+
+        gerente_nombre = ?,
+        gerente_telefono = ?
+
+    WHERE id = ?
+
+    ";
 
     $stmt = $conexion->prepare($update);
 
     $stmt->execute([
+
         $nombre,
-        $telefono,
+        $empresa_telefono,
         $email,
-        $direccion,
+        $empresa_direccion,
+        $redes_sociales,
+
+        $vendedor_nombre,
+        $vendedor_telefono,
+
+        $gerente_nombre,
+        $gerente_telefono,
+
         $id
+
     ]);
 
-    header("Location: index.php");
+    header("Location: proveedores.php");
+
     exit();
 }
 ?>
@@ -78,7 +122,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     padding:30px;
     border-radius:20px;
     box-shadow:0 5px 15px rgba(0,0,0,0.05);
-    max-width:600px;
+    max-width:700px;
 }
 
 form{
@@ -97,18 +141,32 @@ textarea{
     padding:12px;
     border:1px solid #ddd;
     border-radius:10px;
-    font-size:16px;
+    font-size:15px;
+}
+
+textarea{
+    min-height:80px;
+}
+
+hr{
+    margin:25px 0;
+    border:none;
+    border-top:1px solid #eee;
+}
+
+h3{
+    color:#0d6efd;
 }
 
 .btn{
-    margin-top:20px;
-    background:#0d6efd;
-    color:white;
+    margin-top:25px;
+    background:#55ccf0;
+    color:#0d3b66;
     border:none;
     padding:14px;
-    border-radius:10px;
-    font-size:16px;
+    border-radius:12px;
     cursor:pointer;
+    font-weight:bold;
 }
 
 .btn:hover{
@@ -132,27 +190,78 @@ textarea{
 
 <form method="POST">
 
-<label>Nombre</label>
-<input type="text" 
-       name="nombre"
-       value="<?php echo $proveedor['nombre']; ?>"
-       required>
+<h3>🏢 Información de la empresa</h3>
 
-<label>Teléfono</label>
-<input type="text"
-       name="telefono"
-       value="<?php echo $proveedor['telefono']; ?>">
+<label>Nombre de la empresa</label>
+
+<input
+type="text"
+name="nombre"
+value="<?php echo $proveedor['nombre_empresa']; ?>"
+required>
+
+<label>Teléfono de la empresa</label>
+
+<input
+type="text"
+name="empresa_telefono"
+value="<?php echo $proveedor['empresa_telefono']; ?>">
 
 <label>Email</label>
-<input type="email"
-       name="email"
-       value="<?php echo $proveedor['email']; ?>">
 
-<label>Dirección</label>
-<textarea name="direccion"><?php echo $proveedor['direccion']; ?></textarea>
+<input
+type="email"
+name="email"
+value="<?php echo $proveedor['email']; ?>">
+
+<label>Dirección de la empresa</label>
+
+<textarea name="empresa_direccion"><?php echo $proveedor['empresa_direccion']; ?></textarea>
+
+<label>Redes sociales</label>
+
+<textarea name="redes_sociales"><?php echo $proveedor['redes_sociales']; ?></textarea>
+
+<hr>
+
+<h3>👨‍💼 Información del vendedor</h3>
+
+<label>Nombre del vendedor</label>
+
+<input
+type="text"
+name="vendedor_nombre"
+value="<?php echo $proveedor['vendedor_nombre']; ?>">
+
+<label>Teléfono del vendedor</label>
+
+<input
+type="text"
+name="vendedor_telefono"
+value="<?php echo $proveedor['vendedor_telefono']; ?>">
+
+<hr>
+
+<h3>👔 Información del gerente</h3>
+
+<label>Nombre del gerente</label>
+
+<input
+type="text"
+name="gerente_nombre"
+value="<?php echo $proveedor['gerente_nombre']; ?>">
+
+<label>Teléfono del gerente</label>
+
+<input
+type="text"
+name="gerente_telefono"
+value="<?php echo $proveedor['gerente_telefono']; ?>">
 
 <button type="submit" class="btn">
+
     Guardar cambios
+
 </button>
 
 </form>

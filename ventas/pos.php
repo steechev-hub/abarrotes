@@ -1,4 +1,8 @@
-<?php include("../config/db.php"); ?>
+<?php 
+session_start();
+include("../config/db.php"); 
+
+include("../includes/topbar.php"); ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -252,6 +256,24 @@ table td{
     background:#55ccf0;
     border-radius:10px;
 }
+.back-container{
+    margin-bottom:20px;
+}
+
+.btn-back{
+    display:inline-block;
+    background:#6c757d;
+    color:white;
+    text-decoration:none;
+    padding:12px 18px;
+    border-radius:10px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.btn-back:hover{
+    background:#5a6268;
+}
 
 </style>
 </head>
@@ -391,6 +413,16 @@ table td{
                 <button class="quick-btn">
                     💰 Caja
                 </button>
+
+                <div class="back-container">
+
+                <a href="../index.php" class="btn-back">
+
+                    ⬅ Regresar al menú principal
+
+                </a>
+
+            </div>
 
             </div>
 

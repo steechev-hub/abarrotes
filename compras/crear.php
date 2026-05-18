@@ -4,7 +4,7 @@ include("../config/db.php");
 $proveedores = $conexion->query("
 SELECT *
 FROM proveedores
-ORDER BY nombre
+ORDER BY nombre_empresa
 ")->fetchAll();
 
 $productos = $conexion->query("
@@ -82,6 +82,22 @@ table td{
     font-weight:bold;
 }
 
+.btn-back{
+    display:inline-block;
+    margin-top:25px;
+    background:#6c757d;
+    color:white;
+    text-decoration:none;
+    padding:10px 10px;
+    border-radius:10px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.btn-back:hover{
+    background:#5a6268;
+}
+
 </style>
 </head>
 <body>
@@ -102,7 +118,7 @@ table td{
 
 <option value="<?php echo $p['id']; ?>">
 
-<?php echo $p['nombre']; ?>
+<?php echo $p['nombre_empresa']; ?>
 
 </option>
 
@@ -206,6 +222,10 @@ TOTAL: $0.00
 💾 Guardar Compra
 
 </button>
+
+<a href="../index.php" class="btn-back">
+                    ⬅ Regresar al menú principal
+</a>
 
 </div>
 

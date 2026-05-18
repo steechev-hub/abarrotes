@@ -10,7 +10,7 @@ if(!isset($_SESSION['usuario'])){
 $sql = "
 SELECT
 compras.*,
-proveedores.nombre AS proveedor
+proveedores.nombre_empresa AS proveedor
 FROM compras
 INNER JOIN proveedores
 ON compras.proveedor_id = proveedores.id

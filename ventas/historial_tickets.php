@@ -130,6 +130,21 @@ table td{
 tr:hover{
     background:#f8fbff;
 }
+.btn-back{
+    display:inline-block;
+    margin-top:25px;
+    background:#6c757d;
+    color:white;
+    text-decoration:none;
+    padding:10px 10px;
+    border-radius:10px;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.btn-back:hover{
+    background:#5a6268;
+}
 
 </style>
 </head>
@@ -161,6 +176,9 @@ tr:hover{
     <button class="btn buscar">
         🔎 Buscar
     </button>
+    <a href="../index.php" class="btn-back">
+                    ⬅ Regresar al menú principal
+</a>
 
 </div>
 

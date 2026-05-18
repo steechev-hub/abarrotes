@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 include("../config/db.php");
 
 /* =========================
@@ -7,7 +8,9 @@ include("../config/db.php");
 ========================= */
 
 if(!isset($_SESSION['usuario'])){
+
     header("Location: ../auth/login.php");
+
     exit();
 }
 
@@ -16,7 +19,9 @@ if(!isset($_SESSION['usuario'])){
 ========================= */
 
 if(!isset($_GET['id'])){
-    header("Location: index.php");
+
+    header("Location: proveedores.php");
+
     exit();
 }
 
@@ -26,9 +31,15 @@ $id = $_GET['id'];
    DESACTIVAR PROVEEDOR
 ========================= */
 
-$sql = "UPDATE proveedores 
-        SET activo = 0
-        WHERE id = ?";
+$sql = "
+
+UPDATE proveedores
+
+SET activo = 0
+
+WHERE id = ?
+
+";
 
 $stmt = $conexion->prepare($sql);
 
@@ -38,6 +49,7 @@ $stmt->execute([$id]);
    REDIRECCIONAR
 ========================= */
 
-header("Location: index.php");
+header("Location: proveedores.php");
+
 exit();
-?>  
+?>

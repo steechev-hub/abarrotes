@@ -7,7 +7,17 @@ if(!isset($_SESSION['usuario'])){
     exit();
 }
 
-$sql = "SELECT * FROM proveedores ORDER BY id DESC";;
+$sql = "
+
+SELECT *
+
+FROM proveedores
+
+WHERE activo = 1
+
+ORDER BY id DESC
+
+";
 $stmt = $conexion->query($sql);
 $proveedores = $stmt->fetchAll();
 ?>
@@ -36,38 +46,109 @@ $proveedores = $stmt->fetchAll();
     </a>
 </div>
 
-<table>
-<thead>
-<tr>
-    <th>ID</th>
-    <th>Nombre</th>
-    <th>Teléfono</th>
-    <th>Email</th>
-    <th>Acciones</th>
-</tr>
-</thead>
+<div class="table-responsive">
 
-<tbody>
+    <table>
+        </div>
+            <thead>
 
-<?php foreach($proveedores as $p): ?>
+                <tr>
 
-<tr>
-    <td><?php echo $p['id']; ?></td>
-    <td><?php echo $p['nombre']; ?></td>
-    <td><?php echo $p['telefono']; ?></td>
-    <td><?php echo $p['email']; ?></td>
+                    <th>ID</th>
 
-    <td>
-        <a href="editar_proveedor.php?id=<?php echo $p['id']; ?>">✏️</a>
-        <a href="eliminar.php?id=<?php echo $p['id']; ?>" 
-           onclick="return confirm('¿Eliminar proveedor?')">🗑️</a>
-    </td>
-</tr>
+                    <th>Empresa</th>
 
-<?php endforeach; ?>
+                    <th>Tel. Empresa</th>
 
-</tbody>
-</table>
+                    <th>Email</th>
+
+                    <th>Dirección</th>
+
+                    <th>Redes</th>
+
+                    <th>Vendedor</th>
+
+                    <th>Tel. Vendedor</th>
+
+                    <th>Gerente</th>
+
+                    <th>Tel. Gerente</th>
+
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+                <tbody>
+
+                <?php foreach($proveedores as $p): ?>
+
+                    <tr>
+
+                <td>
+                    <?php echo $p['id']; ?>
+                </td>
+
+                <td>
+                    <?php echo $p['nombre_empresa']; ?>
+                </td>
+
+                <td>
+                    <?php echo $p['empresa_telefono']; ?>
+                </td>
+
+                <td>
+                    <?php echo $p['email']; ?>
+                </td>
+
+                <td>
+                    <?php echo $p['empresa_direccion']; ?>
+                </td>
+
+                <td>
+                    <?php echo $p['redes_sociales']; ?>
+                </td>
+
+                <td>
+                    <?php echo $p['vendedor_nombre']; ?>
+                </td>
+
+                <td>
+                    <?php echo $p['vendedor_telefono']; ?>
+                </td>
+
+                <td>
+                    <?php echo $p['gerente_nombre']; ?>
+                </td>
+
+                <td>
+                    <?php echo $p['gerente_telefono']; ?>
+                </td>
+
+                <td class="acciones">
+
+                    <a href="editar_proveedor.php?id=<?php echo $p['id']; ?>">
+                        ✏️
+                    </a>
+
+                    <a
+                    href="eliminar_proveedor.php?id=<?php echo $p['id']; ?>"
+                    onclick="return confirm('¿Eliminar proveedor?')">
+
+                        🗑️
+
+                    </a>
+
+                </td>
+
+                </tr>
+
+                <?php endforeach; ?>
+
+                </tbody>
+            </table>
+            
 
 </div>
 </div>
@@ -75,12 +156,22 @@ $proveedores = $stmt->fetchAll();
 </html>
 
 <style>
+
+table{
+    min-width:1600px;
+}
+
     .table-container{
     background:#fff;
     padding:25px;
     border-radius:20px;
     box-shadow:0 5px 15px rgba(0,0,0,0.05);
 }
+
+.table-responsive{
+    overflow-x:auto;
+}
+
 
 .top-actions{
     display:flex;
