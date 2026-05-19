@@ -275,7 +275,69 @@ table td{
     background:#5a6268;
 }
 
+.scan-flex{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+.btn-scan{
+    background:#28c76f;
+    color:white;
+    border:none;
+    padding:18px;
+    border-radius:15px;
+    cursor:pointer;
+    font-weight:bold;
+    min-width:140px;
+    transition:.2s;
+}
+
+.btn-scan:hover{
+    transform:scale(1.03);
+}
+
+#reader{
+    width:100%;
+    margin-top:15px;
+    border-radius:20px;
+    overflow:hidden;
+    display:none;
+}
+#reader{
+    position:relative;
+}
+
+#reader::after{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:10%;
+    width:80%;
+    height:3px;
+    background:red;
+    animation:scan 2s infinite;
+    z-index:999;
+}
+
+@keyframes scan{
+
+    0%{
+        top:20%;
+    }
+
+    50%{
+        top:80%;
+    }
+
+    100%{
+        top:20%;
+    }
+
+}
 </style>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 
 <body>
@@ -298,12 +360,29 @@ table td{
 
         <div class="scan-box">
 
-            <input
-            type="text"
-            id="codigo"
-            placeholder="🔍 Escanea o escribe código de barras"
-            autofocus
-            autocomplete="off">
+            <div class="scan-flex">
+
+                <input
+                type="text"
+                id="codigo"
+                placeholder="🔍 Escanea o escribe código de barras"
+                autofocus
+                autocomplete="off">
+
+                <button
+                type="button"
+                class="btn-scan"
+                onclick="abrirScanner()">
+
+                📷 Escanear
+
+                </button>
+
+            </div>
+
+            <!-- CAMARA -->
+
+            <div id="reader"></div>
 
         </div>
 
@@ -446,6 +525,41 @@ const codigoInput =
 codigoInput.focus();
 
 /* =========================
+BUSCAR PRODUCTO
+========================= */
+
+function buscarProducto(codigo){
+
+    fetch("buscar_producto.php?codigo=" + codigo)
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        if(data.error){
+
+            alert("❌ Producto no encontrado");
+            return;
+
+        }
+
+        agregarProducto(data);
+
+        codigoInput.focus();
+
+    })
+
+    .catch(error => {
+
+        console.log(error);
+
+        alert("Error al buscar producto");
+
+    });
+
+}
+
+/* =========================
 ESCANEO RAPIDO
 ========================= */
 
@@ -461,36 +575,11 @@ codigoInput.addEventListener("keypress", function(e){
 
         this.value = "";
 
-        fetch("buscar_producto.php?codigo=" + codigo)
+        document
+        .getElementById("beep")
+        .play();
 
-        .then(res => res.json())
-
-        .then(data => {
-
-            if(data.error){
-
-                alert("❌ Producto no encontrado");
-
-                return;
-            }
-
-            document
-            .getElementById("beep")
-            .play();
-
-            agregarProducto(data);
-
-            codigoInput.focus();
-
-        })
-
-        .catch(error => {
-
-            console.log(error);
-
-            alert("Error al buscar producto");
-
-        });
+        buscarProducto(codigo);
 
     }
 
@@ -514,6 +603,7 @@ function agregarProducto(producto){
         producto.cantidad = 1;
 
         carrito.push(producto);
+
     }
 
     render();
@@ -536,7 +626,7 @@ function render(){
     carrito.forEach((p,index) => {
 
         let subtotal =
-            p.precio_venta * p.cantidad;
+            parseFloat(p.precio_venta) * p.cantidad;
 
         total += subtotal;
 
@@ -662,7 +752,6 @@ function pagar(){
     if(carrito.length <= 0){
 
         alert("❌ No hay productos");
-
         return;
 
     }
@@ -675,7 +764,6 @@ function pagar(){
     if(recibido < totalGeneral){
 
         alert("❌ Dinero insuficiente");
-
         return;
 
     }
@@ -704,8 +792,6 @@ function pagar(){
         if(resp.ok){
 
             alert("✅ Venta realizada");
-
-            /* ABRIR TICKET */
 
             window.open(
                 "ticket.php?id=" + resp.venta_id,
@@ -792,12 +878,7 @@ document.querySelector(".buscar")
         .getElementById("codigo")
         .value = codigo;
 
-        let evento =
-            new KeyboardEvent("keypress", {
-                key:"Enter"
-            });
-
-        codigoInput.dispatchEvent(evento);
+        buscarProducto(codigo);
 
     }
 
@@ -829,6 +910,141 @@ quickBtns[3].onclick = () => {
     window.location.href =
     "../caja/";
 };
+
+/* =========================
+SCANNER CAMARA
+========================= */
+
+let scannerActivo = false;
+let html5QrCode;
+
+/* ABRIR SCANNER */
+
+function abrirScanner(){
+
+    if(scannerActivo){
+
+        cerrarScanner();
+        return;
+
+    }
+
+    document.getElementById("reader")
+    .style.display = "block";
+
+    html5QrCode =
+        new Html5Qrcode("reader");
+
+    Html5Qrcode.getCameras()
+
+    .then(cameras => {
+
+        if(cameras && cameras.length){
+
+            let cameraId = cameras[0].id;
+
+            /* BUSCAR CAMARA TRASERA */
+
+            cameras.forEach(camera => {
+
+                let label =
+                    camera.label.toLowerCase();
+
+                if(
+                    label.includes("back") ||
+                    label.includes("rear") ||
+                    label.includes("environment")
+                ){
+                    cameraId = camera.id;
+                }
+
+            });
+
+            html5QrCode.start(
+
+                cameraId,
+
+                {
+                    fps:15,
+
+                    qrbox:{
+                        width:300,
+                        height:150
+                    },
+
+                    aspectRatio:1.777778,
+
+                    formatsToSupport: [
+
+                        Html5QrcodeSupportedFormats.EAN_13,
+                        Html5QrcodeSupportedFormats.EAN_8,
+                        Html5QrcodeSupportedFormats.CODE_128,
+                        Html5QrcodeSupportedFormats.CODE_39,
+                        Html5QrcodeSupportedFormats.UPC_A,
+                        Html5QrcodeSupportedFormats.UPC_E
+
+                    ]
+
+                },
+
+                (decodedText) => {
+
+                    document
+                    .getElementById("codigo")
+                    .value = decodedText;
+
+                    document
+                    .getElementById("beep")
+                    .play();
+
+                    buscarProducto(decodedText);
+
+                    cerrarScanner();
+
+                }
+
+            );
+
+            scannerActivo = true;
+
+        }
+
+    })
+
+    .catch(err => {
+
+        console.log(err);
+
+        alert("No se pudo abrir la cámara");
+
+    });
+
+}
+
+/* =========================
+CERRAR SCANNER
+========================= */
+
+function cerrarScanner(){
+
+    if(html5QrCode){
+
+        html5QrCode.stop()
+
+        .then(() => {
+
+            document.getElementById("reader")
+            .style.display = "none";
+
+            scannerActivo = false;
+
+        })
+
+        .catch(err => console.log(err));
+
+    }
+
+}
 
 </script>
 

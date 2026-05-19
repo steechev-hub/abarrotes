@@ -478,9 +478,29 @@ function iniciarScanner(){
 
         if(cameras && cameras.length){
 
+            let camaraTrasera = cameras[0].id;
+
+            for(let i = 0; i < cameras.length; i++){
+
+                let nombre =
+                    cameras[i].label.toLowerCase();
+
+                if(
+                    nombre.includes("back") ||
+                    nombre.includes("rear") ||
+                    nombre.includes("environment") ||
+                    nombre.includes("trasera")
+                ){
+
+                    camaraTrasera = cameras[i].id;
+                    break;
+                }
+
+            }
+
             scanner.start(
 
-                cameras[0].id,
+                camaraTrasera,
 
                 {
                     fps: 10,
@@ -497,14 +517,10 @@ function iniciarScanner(){
                 },
 
                 function(error){
-                    // ignorar errores
+                    // ignorar
                 }
 
             );
-
-        } else {
-
-            alert("No se encontró cámara");
 
         }
 
