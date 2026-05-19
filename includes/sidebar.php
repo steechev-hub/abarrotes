@@ -51,12 +51,12 @@
         </a>
 
         <a href="/surtete/ventas/historial_tickets.php">
-            🧾 <span>Historial</span>
+            🧾 <span>Historial de Tickets</span>
         </a>
 
         <?php if($_SESSION['rol'] == 'admin'): ?>
 
-            <a href="#">
+            <a href="/surtete/configuracion/ticket.php">
                 ⚙️ <span>Configuración</span>
             </a>
 

@@ -112,10 +112,10 @@ select:focus{
 
 <br><br>
 
-• Entradas por cortesía  
+
 • Salidas por cortesía  
 • Mermas  
-• Ajustes manuales  
+ 
 
 </div>
 
@@ -162,20 +162,12 @@ select:focus{
                 Seleccionar
             </option>
 
-            <option value="entrada">
-                📥 Entrada
-            </option>
-
             <option value="salida">
                 📤 Salida
             </option>
 
             <option value="merma">
                 ⚠️ Merma
-            </option>
-
-            <option value="ajuste">
-                ⚙️ Ajuste
             </option>
 
         </select>
@@ -194,28 +186,12 @@ select:focus{
                 Seleccionar motivo
             </option>
 
-            <option value="Compra proveedor">
-                Compra proveedor
-            </option>
-
-            <option value="Entrada cortesia">
-                Entrada cortesía
-            </option>
-
-            <option value="Venta realizada">
-                Venta realizada
-            </option>
-
             <option value="Salida cortesia">
                 Salida cortesía
             </option>
 
             <option value="Producto dañado">
                 Producto dañado
-            </option>
-
-            <option value="Ajuste manual">
-                Ajuste manual
             </option>
 
         </select>

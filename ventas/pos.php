@@ -477,17 +477,6 @@ table td{
 
             <div class="quick-grid">
 
-                <button class="quick-btn">
-                    📦 Inventario
-                </button>
-
-                <button class="quick-btn">
-                    🚚 Compras
-                </button>
-
-                <button class="quick-btn">
-                    📊 Reportes
-                </button>
 
                 <button class="quick-btn">
                     💰 Caja
@@ -495,11 +484,7 @@ table td{
 
                 <div class="back-container">
 
-                <a href="../index.php" class="btn-back">
-
-                    ⬅ Regresar al menú principal
-
-                </a>
+                <a href="../index.php" class="btn-back">⬅ Regresar al menú principal</a>
 
             </div>
 

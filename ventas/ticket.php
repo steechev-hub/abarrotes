@@ -21,6 +21,12 @@ ON detalle_venta.producto_id = productos.id
 WHERE venta_id = ?
 ");
 
+$config = $conexion->query("
+SELECT *
+FROM configuracion_ticket
+LIMIT 1
+")->fetch();
+
 $detalle->execute([$id]);
 
 $productos = $detalle->fetchAll();
@@ -62,11 +68,25 @@ table{
 </head>
 <body onload="window.print()">
 
-<h2>SURTETE</h2>
+<h2>
+<?php echo $config['nombre_negocio']; ?>
+</h2>
 
 <p class="center">
 Fecha:
 <?php echo $venta['fecha']; ?>
+</p>
+
+<p class="center">
+<?php echo $config['telefono']; ?>
+</p>
+
+<p class="center">
+<?php echo $config['direccion']; ?>
+</p>
+
+<p class="center">
+<?php echo $config['facebook']; ?>
 </p>
 
 <hr>
@@ -114,7 +134,7 @@ $<?php echo number_format($venta['cambio'],2); ?>
 <hr>
 
 <p class="center">
-¡GRACIAS POR SU COMPRA!
+<?php echo nl2br($config['mensaje_final']); ?>
 </p>
 
 </body>
