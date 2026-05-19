@@ -478,12 +478,7 @@ table td{
             <div class="quick-grid">
 
 
-                <button class="quick-btn">
-                    💰 Caja
-                </button>
-
                 <div class="back-container">
-
                 <a href="../index.php" class="btn-back">⬅ Regresar al menú principal</a>
 
             </div>

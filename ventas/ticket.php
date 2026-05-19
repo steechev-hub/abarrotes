@@ -27,6 +27,18 @@ FROM configuracion_ticket
 LIMIT 1
 ")->fetch();
 
+$usuario = $conexion->prepare("
+SELECT nombre
+FROM usuarios
+WHERE id = ?
+");
+
+$usuario->execute([
+    $venta['usuario_id']
+]);
+
+$cajero = $usuario->fetch();
+
 $detalle->execute([$id]);
 
 $productos = $detalle->fetchAll();
@@ -68,6 +80,21 @@ table{
 </head>
 <body onload="window.print()">
 
+<?php if($config['logo'] != ''): ?>
+
+<div class="center">
+
+<img
+src="../uploads/<?php echo $config['logo']; ?>"
+style="
+width:100px;
+margin-bottom:10px;
+">
+
+</div>
+
+<?php endif; ?>
+
 <h2>
 <?php echo $config['nombre_negocio']; ?>
 </h2>
@@ -76,6 +103,18 @@ table{
 Fecha:
 <?php echo $venta['fecha']; ?>
 </p>
+
+<?php if($config['mostrar_cajero']): ?>
+
+<p class="center">
+
+CAJERO:
+
+<?php echo $cajero['nombre']; ?>
+
+</p>
+
+<?php endif; ?>
 
 <p class="center">
 <?php echo $config['telefono']; ?>

@@ -15,6 +15,31 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $direccion = $_POST['direccion'];
     $facebook = $_POST['facebook'];
     $mensaje_final = $_POST['mensaje_final'];
+    $mostrar_cajero =
+    isset($_POST['mostrar_cajero'])
+    ? 1 : 0;
+
+    /* LOGO */
+
+    $logo = $config['logo'];
+
+    if(isset($_FILES['logo']) &&
+    $_FILES['logo']['tmp_name'] != ''){
+
+        $nombreLogo =
+            time() . "_" .
+            $_FILES['logo']['name'];
+
+        move_uploaded_file(
+
+            $_FILES['logo']['tmp_name'],
+
+            "../uploads/" . $nombreLogo
+
+        );
+
+        $logo = $nombreLogo;
+    }
 
     $sql = "
     UPDATE configuracion_ticket
@@ -24,7 +49,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         telefono = ?,
         direccion = ?,
         facebook = ?,
-        mensaje_final = ?
+        mensaje_final = ?,
+        logo = ?,
+        mostrar_cajero = ?
 
     WHERE id = ?
     ";
@@ -38,6 +65,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $direccion,
         $facebook,
         $mensaje_final,
+        $logo,
+        $mostrar_cajero,
 
         $config['id']
 
@@ -133,7 +162,7 @@ textarea{
 
 <?php endif; ?>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
 
 <label>Nombre del negocio</label>
 
@@ -160,6 +189,46 @@ name="direccion"><?php echo $config['direccion']; ?></textarea>
 type="text"
 name="facebook"
 value="<?php echo $config['facebook']; ?>">
+
+<label>Logo del negocio</label>
+
+<input
+type="file"
+name="logo"
+accept="image/*">
+
+<?php if($config['logo'] != ''): ?>
+
+<br><br>
+
+<img
+src="../uploads/<?php echo $config['logo']; ?>"
+style="
+width:120px;
+border-radius:15px;
+">
+
+<?php endif; ?>
+
+<br><br>
+
+<label>
+
+<input
+type="checkbox"
+name="mostrar_cajero"
+
+<?php
+if($config['mostrar_cajero']){
+    echo "checked";
+}
+?>
+
+>
+
+Mostrar nombre del cajero en ticket
+
+</label>
 
 <label>Mensaje final del ticket</label>
 
