@@ -180,6 +180,41 @@ select:focus{
     min-height:320px;
 }
 
+#scanner-video{
+    width:100%;
+    min-height:320px;
+    position:relative;
+}
+
+/* LINEA DE ESCANEO */
+
+#scanner-video::after{
+    content:"";
+    position:absolute;
+    left:10%;
+    width:80%;
+    height:3px;
+    background:red;
+    animation:scanline 2s infinite;
+    z-index:999;
+}
+
+@keyframes scanline{
+
+    0%{
+        top:20%;
+    }
+
+    50%{
+        top:80%;
+    }
+
+    100%{
+        top:20%;
+    }
+
+}
+
 .cerrar-scan{
     position:absolute;
     top:10px;
@@ -464,13 +499,26 @@ function usar30(){
 <script>
 
 let scanner = null;
+let scannerActivo = false;
+
+/* =========================
+INICIAR SCANNER
+========================= */
 
 function iniciarScanner(){
+
+    if(scannerActivo){
+
+        detenerScanner();
+        return;
+
+    }
 
     document.getElementById("scanner-container")
     .style.display = "block";
 
-    scanner = new Html5Qrcode("scanner-video");
+    scanner =
+        new Html5Qrcode("scanner-video");
 
     Html5Qrcode.getCameras()
 
@@ -478,12 +526,15 @@ function iniciarScanner(){
 
         if(cameras && cameras.length){
 
-            let camaraTrasera = cameras[0].id;
+            let camaraTrasera =
+                cameras[0].id;
 
-            for(let i = 0; i < cameras.length; i++){
+            /* BUSCAR CAMARA TRASERA */
+
+            cameras.forEach(camera => {
 
                 let nombre =
-                    cameras[i].label.toLowerCase();
+                    camera.label.toLowerCase();
 
                 if(
                     nombre.includes("back") ||
@@ -492,35 +543,70 @@ function iniciarScanner(){
                     nombre.includes("trasera")
                 ){
 
-                    camaraTrasera = cameras[i].id;
-                    break;
+                    camaraTrasera = camera.id;
+
                 }
 
-            }
+            });
 
             scanner.start(
 
                 camaraTrasera,
 
                 {
-                    fps: 10,
-                    qrbox: 250
+
+                    fps:15,
+
+                    qrbox:{
+                        width:300,
+                        height:150
+                    },
+
+                    aspectRatio:1.777778,
+
+                    formatsToSupport:[
+
+                        Html5QrcodeSupportedFormats.EAN_13,
+                        Html5QrcodeSupportedFormats.EAN_8,
+                        Html5QrcodeSupportedFormats.UPC_A,
+                        Html5QrcodeSupportedFormats.UPC_E,
+                        Html5QrcodeSupportedFormats.CODE_128,
+                        Html5QrcodeSupportedFormats.CODE_39
+
+                    ]
+
                 },
 
                 function(decodedText){
 
+                    /* PONER CODIGO */
+
                     document.getElementById("codigo_barras")
                     .value = decodedText;
+
+                    /* VIBRACION */
+
+                    if(navigator.vibrate){
+
+                        navigator.vibrate(200);
+
+                    }
+
+                    /* CERRAR */
 
                     detenerScanner();
 
                 },
 
                 function(error){
-                    // ignorar
+
+                    /* IGNORAR */
+
                 }
 
             );
+
+            scannerActivo = true;
 
         }
 
@@ -530,11 +616,15 @@ function iniciarScanner(){
 
         console.log(err);
 
-        alert("Error al abrir cámara");
+        alert("No se pudo abrir la cámara");
 
     });
 
 }
+
+/* =========================
+DETENER SCANNER
+========================= */
 
 function detenerScanner(){
 
@@ -548,6 +638,8 @@ function detenerScanner(){
 
             document.getElementById("scanner-container")
             .style.display = "none";
+
+            scannerActivo = false;
 
         })
 
@@ -563,7 +655,7 @@ function detenerScanner(){
 
 </script>
 
-<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 </body>
 </html>
