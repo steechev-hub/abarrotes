@@ -144,6 +144,54 @@ select:focus{
     grid-template-columns:1fr 1fr;
     gap:15px;
 }
+/* SCANNER */
+
+.barcode-box{
+    display:flex;
+    gap:10px;
+}
+
+.barcode-box input{
+    flex:1;
+}
+
+.btn-scan{
+    background:#28c76f;
+    color:white;
+    border:none;
+    padding:0 18px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:bold;
+    min-width:130px;
+}
+
+#scanner-container{
+    display:none;
+    margin-top:20px;
+    background:#000;
+    border-radius:20px;
+    overflow:hidden;
+    position:relative;
+}
+
+#scanner-video{
+    width:100%;
+    height:320px;
+    object-fit:cover;
+}
+
+.cerrar-scan{
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:#ea5455;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:10px;
+    cursor:pointer;
+}
 
 </style>
 </head>
@@ -169,10 +217,41 @@ select:focus{
 
         <label>📦 Código de barras</label>
 
-        <input
-        type="text"
-        name="codigo_barras"
-        required>
+        <div class="barcode-box">
+
+            <input
+            type="text"
+            id="codigo_barras"
+            name="codigo_barras"
+            required>
+
+            <button
+            type="button"
+            class="btn-scan"
+            onclick="iniciarScanner()">
+
+            📷 Escanear
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- CAMARA -->
+
+    <div id="scanner-container">
+
+        <video id="scanner-video"></video>
+
+        <button
+        type="button"
+        class="cerrar-scan"
+        onclick="detenerScanner()">
+
+        ✖ Cerrar cámara
+
+        </button>
 
     </div>
 
@@ -382,6 +461,62 @@ function usar30(){
 }
 
 </script>
+
+<script>
+
+let scanner;
+
+function iniciarScanner(){
+
+    document.getElementById("scanner-container")
+    .style.display = "block";
+
+    scanner = new Html5Qrcode("scanner-video");
+
+    scanner.start(
+
+        { facingMode: "environment" },
+
+        {
+            fps: 10,
+            qrbox: 250
+        },
+
+        function(decodedText){
+
+            document.getElementById("codigo_barras")
+            .value = decodedText;
+
+            detenerScanner();
+
+        },
+
+        function(errorMessage){
+            // errores ignorados
+        }
+
+    );
+
+}
+
+function detenerScanner(){
+
+    if(scanner){
+
+        scanner.stop().then(() => {
+
+            document.getElementById("scanner-container")
+            .style.display = "none";
+
+        });
+
+    }
+
+}
+
+</script>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 </body>
 </html>
