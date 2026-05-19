@@ -177,8 +177,7 @@ select:focus{
 
 #scanner-video{
     width:100%;
-    height:320px;
-    object-fit:cover;
+    min-height:320px;
 }
 
 .cerrar-scan{
@@ -242,7 +241,7 @@ select:focus{
 
     <div id="scanner-container">
 
-        <video id="scanner-video"></video>
+        <div id="scanner-video"></div>
 
         <button
         type="button"
@@ -464,7 +463,7 @@ function usar30(){
 
 <script>
 
-let scanner;
+let scanner = null;
 
 function iniciarScanner(){
 
@@ -473,29 +472,51 @@ function iniciarScanner(){
 
     scanner = new Html5Qrcode("scanner-video");
 
-    scanner.start(
+    Html5Qrcode.getCameras()
 
-        { facingMode: "environment" },
+    .then(cameras => {
 
-        {
-            fps: 10,
-            qrbox: 250
-        },
+        if(cameras && cameras.length){
 
-        function(decodedText){
+            scanner.start(
 
-            document.getElementById("codigo_barras")
-            .value = decodedText;
+                cameras[0].id,
 
-            detenerScanner();
+                {
+                    fps: 10,
+                    qrbox: 250
+                },
 
-        },
+                function(decodedText){
 
-        function(errorMessage){
-            // errores ignorados
+                    document.getElementById("codigo_barras")
+                    .value = decodedText;
+
+                    detenerScanner();
+
+                },
+
+                function(error){
+                    // ignorar errores
+                }
+
+            );
+
+        } else {
+
+            alert("No se encontró cámara");
+
         }
 
-    );
+    })
+
+    .catch(err => {
+
+        console.log(err);
+
+        alert("Error al abrir cámara");
+
+    });
 
 }
 
@@ -503,10 +524,20 @@ function detenerScanner(){
 
     if(scanner){
 
-        scanner.stop().then(() => {
+        scanner.stop()
+
+        .then(() => {
+
+            scanner.clear();
 
             document.getElementById("scanner-container")
             .style.display = "none";
+
+        })
+
+        .catch(err => {
+
+            console.log(err);
 
         });
 

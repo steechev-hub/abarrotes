@@ -39,7 +39,7 @@
         </a>
 
         <a href="/surtete/inventario/index.php">
-            📊 <span>Inventario</span>
+            📊 <span>Movimientos de Inventario</span>
         </a>
 
         <a href="/surtete/inventario/agregar_movimiento.php">
