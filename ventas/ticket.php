@@ -27,17 +27,29 @@ FROM configuracion_ticket
 LIMIT 1
 ")->fetch();
 
-$usuario = $conexion->prepare("
-SELECT nombre
-FROM usuarios
-WHERE id = ?
-");
+$cajero = [
+    'nombre' => 'Sin cajero'
+];
 
-$usuario->execute([
-    $venta['usuario_id']
-]);
+if(!empty($venta['usuario_id'])){
 
-$cajero = $usuario->fetch();
+    $usuario = $conexion->prepare("
+    SELECT nombre
+    FROM usuarios
+    WHERE id = ?
+    ");
+
+    $usuario->execute([
+        $venta['usuario_id']
+    ]);
+
+    $resultado = $usuario->fetch();
+
+    if($resultado){
+        $cajero = $resultado;
+    }
+
+}
 
 $detalle->execute([$id]);
 
@@ -110,9 +122,7 @@ Fecha:
 
 CAJERO:
 
-<?php echo $cajero['nombre']; ?>
-
-</p>
+<?php echo $cajero['nombre'] ?? 'Sin cajero'; ?></p>
 
 <?php endif; ?>
 
