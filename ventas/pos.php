@@ -308,18 +308,15 @@ table td{
     position:relative;
 }
 
-#reader::after{
-    content:"";
-    position:absolute;
-    top:50%;
-    left:10%;
-    width:80%;
-    height:3px;
-    background:red;
-    animation:scan 2s infinite;
-    z-index:999;
+#reader{
+    width:100%;
+    margin-top:15px;
+    border-radius:20px;
+    overflow:hidden;
+    display:none;
+    background:black;
+    min-height:320px;
 }
-
 @keyframes scan{
 
     0%{
@@ -365,7 +362,7 @@ table td{
                 <input
                 type="text"
                 id="codigo"
-                placeholder="🔍 Escanea o escribe código de barras"
+                placeholder="🔍 Escanea, código o nombre del producto"
                 autofocus
                 autocomplete="off">
 
@@ -490,8 +487,7 @@ table td{
     </div>
 
 </div>
-/* TU JAVASCRIPT ACTUAL VA AQUÍ */
-/* NO BORRES TU LOGICA */
+
 <script>
 
 let carrito = [];
@@ -864,41 +860,17 @@ document.querySelector(".buscar")
 
 });
 
-/* =========================
-BOTONES RAPIDOS
-========================= */
-
-let quickBtns =
-    document.querySelectorAll(".quick-btn");
-
-quickBtns[0].onclick = () => {
-    window.location.href =
-    "../productos/";
-};
-
-quickBtns[1].onclick = () => {
-    window.location.href =
-    "../compras/";
-};
-
-quickBtns[2].onclick = () => {
-    window.location.href =
-    "../reportes/";
-};
-
-quickBtns[3].onclick = () => {
-    window.location.href =
-    "../caja/";
-};
 
 /* =========================
 SCANNER CAMARA
 ========================= */
 
+let scanner = null;
 let scannerActivo = false;
-let html5QrCode;
 
-/* ABRIR SCANNER */
+/* =========================
+ABRIR SCANNER
+========================= */
 
 function abrirScanner(){
 
@@ -912,7 +884,7 @@ function abrirScanner(){
     document.getElementById("reader")
     .style.display = "block";
 
-    html5QrCode =
+    scanner =
         new Html5Qrcode("reader");
 
     Html5Qrcode.getCameras()
@@ -921,30 +893,35 @@ function abrirScanner(){
 
         if(cameras && cameras.length){
 
-            let cameraId = cameras[0].id;
+            let camaraTrasera =
+                cameras[0].id;
 
             /* BUSCAR CAMARA TRASERA */
 
             cameras.forEach(camera => {
 
-                let label =
+                let nombre =
                     camera.label.toLowerCase();
 
                 if(
-                    label.includes("back") ||
-                    label.includes("rear") ||
-                    label.includes("environment")
+                    nombre.includes("back") ||
+                    nombre.includes("rear") ||
+                    nombre.includes("environment") ||
+                    nombre.includes("trasera")
                 ){
-                    cameraId = camera.id;
+
+                    camaraTrasera = camera.id;
+
                 }
 
             });
 
-            html5QrCode.start(
+            scanner.start(
 
-                cameraId,
+                camaraTrasera,
 
                 {
+
                     fps:15,
 
                     qrbox:{
@@ -954,32 +931,44 @@ function abrirScanner(){
 
                     aspectRatio:1.777778,
 
-                    formatsToSupport: [
+                    formatsToSupport:[
 
                         Html5QrcodeSupportedFormats.EAN_13,
                         Html5QrcodeSupportedFormats.EAN_8,
-                        Html5QrcodeSupportedFormats.CODE_128,
-                        Html5QrcodeSupportedFormats.CODE_39,
                         Html5QrcodeSupportedFormats.UPC_A,
-                        Html5QrcodeSupportedFormats.UPC_E
+                        Html5QrcodeSupportedFormats.UPC_E,
+                        Html5QrcodeSupportedFormats.CODE_128,
+                        Html5QrcodeSupportedFormats.CODE_39
 
                     ]
 
                 },
 
-                (decodedText) => {
+                function(decodedText){
 
-                    document
-                    .getElementById("codigo")
+                    /* PONER CODIGO */
+
+                    document.getElementById("codigo")
                     .value = decodedText;
 
-                    document
-                    .getElementById("beep")
+                    /* SONIDO */
+
+                    document.getElementById("beep")
                     .play();
+
+                    /* BUSCAR PRODUCTO */
 
                     buscarProducto(decodedText);
 
+                    /* CERRAR */
+
                     cerrarScanner();
+
+                },
+
+                function(error){
+
+                    /* IGNORAR */
 
                 }
 
@@ -1007,11 +996,13 @@ CERRAR SCANNER
 
 function cerrarScanner(){
 
-    if(html5QrCode){
+    if(scanner){
 
-        html5QrCode.stop()
+        scanner.stop()
 
         .then(() => {
+
+            scanner.clear();
 
             document.getElementById("reader")
             .style.display = "none";
@@ -1020,11 +1011,16 @@ function cerrarScanner(){
 
         })
 
-        .catch(err => console.log(err));
+        .catch(err => {
+
+            console.log(err);
+
+        });
 
     }
 
 }
+
 
 </script>
 

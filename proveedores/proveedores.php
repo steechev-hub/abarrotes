@@ -49,7 +49,6 @@ $proveedores = $stmt->fetchAll();
 <div class="table-responsive">
 
     <table>
-        </div>
             <thead>
 
                 <tr>

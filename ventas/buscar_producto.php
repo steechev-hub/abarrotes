@@ -1,15 +1,35 @@
 <?php
+
 include("../config/db.php");
 
-$codigo = $_GET['codigo'];
+$busqueda = $_GET['codigo'] ?? '';
 
-$stmt = $conexion->prepare("SELECT * FROM productos WHERE codigo_barras = ?");
-$stmt->execute([$codigo]);
+$stmt = $conexion->prepare("
+SELECT *
+FROM productos
+WHERE codigo_barras = ?
+OR nombre LIKE ?
+LIMIT 1
+");
+
+$stmt->execute([
+
+    $busqueda,
+    "%".$busqueda."%"
+
+]);
 
 $producto = $stmt->fetch();
 
 if($producto){
+
     echo json_encode($producto);
-} else {
-    echo json_encode(["error" => "Producto no encontrado"]);
+
+}else{
+
+    echo json_encode([
+        "error" => "Producto no encontrado"
+    ]);
+
 }
+?>
