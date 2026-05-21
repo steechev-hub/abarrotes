@@ -1,0 +1,3 @@
+RewriteEngine On
+
+RewriteRule ^$ /surtete/ [L,R=302]

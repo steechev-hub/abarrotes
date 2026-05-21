@@ -41,7 +41,7 @@ body {
 }
 
 .input-group input {
-    width: 100%;
+    width: 90%;
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 10px;

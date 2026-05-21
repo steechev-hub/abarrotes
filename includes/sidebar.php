@@ -46,7 +46,7 @@
             🔄 <span>Movimientos</span>
         </a>
 
-        <a href="#">
+        <a href="/surtete/reportes/index.php">
             📈 <span>Reportes</span>
         </a>
 
