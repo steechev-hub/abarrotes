@@ -9,6 +9,10 @@ if(!isset($_SESSION['usuario'])){
     exit();
 }
 
+/* =========================
+   FILTROS
+========================= */
+
 $tipo = $_GET['tipo'] ?? 'dia';
 
 $fecha = $_GET['fecha'] ?? date('Y-m-d');
@@ -35,6 +39,10 @@ elseif($tipo == 'anio'){
 
     $where = "YEAR(v.fecha)=YEAR('$fecha')";
 }
+
+/* =========================
+   CONSULTA
+========================= */
 
 $sql = "
 
@@ -75,7 +83,11 @@ ORDER BY v.fecha DESC
 
 ";
 
-$ventas = $conexion->query($sql)->fetchAll();
+$ventas = $conexion->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+
+/* =========================
+   TOTALES
+========================= */
 
 $totalVentas = 0;
 $totalCostos = 0;
@@ -83,24 +95,21 @@ $totalUtilidad = 0;
 
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Reporte Ventas</title>
-
 <style>
 
-body{
-    font-family:Arial;
-    background:#f4f6f9;
-    padding:20px;
+.resultado-card{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    margin-top:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.05);
 }
 
-.card{
-    background:white;
-    padding:20px;
-    border-radius:15px;
+.botones-reportes{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
 }
 
 table{
@@ -109,69 +118,69 @@ table{
     margin-top:20px;
 }
 
-th{
+table th{
     background:#0d6efd;
     color:white;
-    padding:12px;
+    padding:14px;
+    text-align:center;
+    font-size:16px;
 }
 
-td{
-    border:1px solid #ddd;
-    padding:10px;
+table td{
+    border:1px solid #eee;
+    padding:12px;
     text-align:center;
+    font-size:15px;
+}
+
+table tr:hover{
+    background:#f8f9fa;
 }
 
 .btn{
     background:#198754;
     color:white;
-    padding:10px 15px;
+    padding:12px 18px;
     border-radius:10px;
     text-decoration:none;
+    font-weight:bold;
+    display:inline-block;
 }
 
 .btn_pdf{
     background:#C24830;
     color:white;
-    padding:10px 15px;
+    padding:12px 18px;
     border-radius:10px;
     text-decoration:none;
+    font-weight:bold;
+    display:inline-block;
 }
 
 .resumen{
-    margin-top:20px;
+    margin-top:25px;
+    background:#f8f9fa;
+    padding:20px;
+    border-radius:15px;
+    font-size:20px;
+}
+
+.resumen p{
+    margin:10px 0;
+}
+
+.sin-resultados{
+    text-align:center;
+    padding:30px;
     font-size:18px;
+    color:#777;
 }
 
 </style>
 
-</head>
+<div class="resultado-card">
 
-<body>
-
-<div class="card">
-
-<h2>📊 Reporte de Ventas</h2>
-
-<form method="GET">
-
-<input type="date" name="fecha"
-value="<?php echo $fecha; ?>">
-
-<select name="tipo">
-
-<option value="dia">Día</option>
-
-<option value="semana">Semana</option>
-
-<option value="mes">Mes</option>
-
-<option value="anio">Año</option>
-
-</select>
-
-<button type="submit">
-Cargar
-</button>
+<div class="botones-reportes">
 
 <a class="btn"
 
@@ -185,24 +194,30 @@ href="generar_excel.php?tipo=<?php echo $tipo; ?>&fecha=<?php echo $fecha; ?>">
 
 href="generar_pdf.php?tipo=<?php echo $tipo; ?>&fecha=<?php echo $fecha; ?>">
 
-📝 Descargar PDF
+📄 Descargar PDF
 
 </a>
 
-</form>
+</div>
+
+<?php if(count($ventas) > 0): ?>
 
 <table>
 
 <tr>
 
 <th>Código</th>
+
 <th>Producto</th>
+
 <th>Cantidad</th>
 
 <th>Costo U.</th>
+
 <th>Venta U.</th>
 
 <th>Total Venta</th>
+
 <th>Total Costo</th>
 
 <th>Utilidad</th>
@@ -225,19 +240,33 @@ $totalUtilidad += $v['utilidad'];
 
 <tr>
 
-<td><?php echo $v['codigo_barras']; ?></td>
+<td>
+<?php echo $v['codigo_barras']; ?>
+</td>
 
-<td><?php echo $v['nombre']; ?></td>
+<td>
+<?php echo $v['nombre']; ?>
+</td>
 
-<td><?php echo $v['cantidad']; ?></td>
+<td>
+<?php echo $v['cantidad']; ?>
+</td>
 
-<td>$<?php echo number_format($v['precio_compra'],2); ?></td>
+<td>
+$<?php echo number_format($v['precio_compra'],2); ?>
+</td>
 
-<td>$<?php echo number_format($v['precio_venta'],2); ?></td>
+<td>
+$<?php echo number_format($v['precio_venta'],2); ?>
+</td>
 
-<td>$<?php echo number_format($v['total_venta'],2); ?></td>
+<td>
+$<?php echo number_format($v['total_venta'],2); ?>
+</td>
 
-<td>$<?php echo number_format($v['total_costo'],2); ?></td>
+<td>
+$<?php echo number_format($v['total_costo'],2); ?>
+</td>
 
 <td>
 
@@ -249,7 +278,9 @@ $<?php echo number_format($v['utilidad'],2); ?>
 
 </td>
 
-<td><?php echo $v['fecha']; ?></td>
+<td>
+<?php echo $v['fecha']; ?>
+</td>
 
 </tr>
 
@@ -276,7 +307,14 @@ $<?php echo number_format($v['utilidad'],2); ?>
 
 </div>
 
+<?php else: ?>
+
+<div class="sin-resultados">
+
+No se encontraron ventas para la fecha seleccionada.
+
 </div>
 
-</body>
-</html>
+<?php endif; ?>
+
+</div>
