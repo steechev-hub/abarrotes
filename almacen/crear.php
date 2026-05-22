@@ -302,6 +302,62 @@ select:focus{
 
     </div>
 
+    <!-- MEDIDA -->
+
+    <div class="grid-2">
+
+        <div class="form-group">
+
+            <label>📏 Contenido</label>
+
+            <input
+            type="number"
+            step="0.01"
+            name="contenido_medida"
+            placeholder="Ejemplo: 600">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>🧪 Unidad de medida</label>
+
+            <select name="unidad_medida">
+
+                <option value="">
+                    Seleccionar
+                </option>
+
+                <option value="g">
+                    Gramos (g)
+                </option>
+
+                <option value="kg">
+                    Kilogramos (kg)
+                </option>
+
+                <option value="ml">
+                    Mililitros (ml)
+                </option>
+
+                <option value="L">
+                    Litros (L)
+                </option>
+
+                <option value="oz">
+                    Onzas (oz)
+                </option>
+
+                <option value="mg">
+                    Miligramos (mg)
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
     <!-- PRECIOS -->
 
     <div class="grid-2">

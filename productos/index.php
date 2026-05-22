@@ -258,7 +258,6 @@ ORDER BY nombre ASC
 
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Código</th>
                 <th>Producto</th>
                 <th>Categoría</th>
@@ -275,12 +274,23 @@ ORDER BY nombre ASC
 
             <tr>
 
-                <td><?php echo $p['id']; ?></td>
                 <td><?php echo $p['codigo_barras']; ?></td>
-                <td><?php echo $p['nombre']; ?></td>
+                <td><?php echo $p['nombre']; ?>
+
+                <?php if($p['contenido_medida'] && $p['unidad_medida']): ?>
+
+                    (
+                    <?php echo $p['contenido_medida']; ?>
+                    <?php echo $p['unidad_medida']; ?>
+                    )
+
+                <?php endif; ?>
+
+                </td>
                 <td><?php echo $p['categoria']; ?></td>
                 <td>$<?php echo $p['precio_compra']; ?></td>
                 <td>$<?php echo $p['precio_venta']; ?></td>
+
                 <?php
 
                 $clase = 'normal';

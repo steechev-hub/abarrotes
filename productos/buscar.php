@@ -26,25 +26,19 @@ foreach($productos as $p):
 
 <tr>
 
-    <td>
-        <?php echo $p['codigo_barras']; ?>
-    </td>
+    <td><?php echo $p['codigo_barras']; ?></td>
+    <td><?php echo $p['nombre']; ?></td>
+    <?php echo $p['nombre']; ?>
+    <?php if($p['contenido_medida'] && $p['unidad_medida']): ?>
+    (
+    <?php echo $p['contenido_medida']; ?>
+    <?php echo $p['unidad_medida']; ?>
+    )
 
-    <td>
-        <?php echo $p['nombre']; ?>
-    </td>
-
-    <td>
-        <?php echo $p['categoria']; ?>
-    </td>
-
-    <td>
-        $<?php echo $p['precio_compra']; ?>
-    </td>
-
-    <td>
-        $<?php echo $p['precio_venta']; ?>
-    </td>
+    <?php endif; ?>
+    <td><?php echo $p['categoria']; ?></td>
+    <td>$<?php echo $p['precio_compra']; ?></td>
+    <td>$<?php echo $p['precio_venta']; ?></td>
 
     <td class="stock <?php echo ($p['stock'] <= 5) ? 'bajo' : 'normal'; ?>">
         <?php echo $p['stock']; ?>

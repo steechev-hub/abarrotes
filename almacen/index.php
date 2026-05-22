@@ -297,7 +297,6 @@ placeholder="🔍 Buscar producto...">
 
 <tr>
 
-<th>ID</th>
 <th>Código</th>
 <th>Producto</th>
 <th>Categoría</th>
@@ -328,8 +327,6 @@ elseif($p['stock'] <= 10){
 ?>
 
 <tr>
-
-<td><?php echo $p['id']; ?></td>
 
 <td><?php echo $p['codigo_barras']; ?></td>
 

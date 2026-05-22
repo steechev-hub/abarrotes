@@ -15,20 +15,24 @@ $precio_compra = $_POST['precio_compra'];
 $precio_venta = $_POST['precio_venta'];
 $stock = $_POST['stock'];
 $categoria_id = $_POST['categoria_id'];
+$contenido_medida = $_POST['contenido_medida'];
+$unidad_medida = $_POST['unidad_medida'];
 
 /* GUARDAR PRODUCTO */
 
 $stmt = $conexion->prepare("
-INSERT INTO productos
-(
+INSERT INTO productos (
+
     codigo_barras,
     nombre,
     precio_compra,
     precio_venta,
     stock,
-    categoria_id
-)
-VALUES (?,?,?,?,?,?)
+    categoria_id,
+    contenido_medida,
+    unidad_medida)
+
+VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
 $stmt->execute([
@@ -37,7 +41,9 @@ $stmt->execute([
     $precio_compra,
     $precio_venta,
     $stock,
-    $categoria_id
+    $categoria_id,
+    $contenido_medida,
+    $unidad_medida
 ]);
 
 /* ID PRODUCTO */

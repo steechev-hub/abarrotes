@@ -43,7 +43,7 @@
         </a>
 
         <a href="/surtete/inventario/agregar_movimiento.php">
-            🔄 <span>Movimientos</span>
+            🔄 <span>Mermas</span>
         </a>
 
         <a href="/surtete/reportes/index.php">
