@@ -129,6 +129,14 @@ td{
     text-decoration:none;
 }
 
+.btn_pdf{
+    background:#C24830;
+    color:white;
+    padding:10px 15px;
+    border-radius:10px;
+    text-decoration:none;
+}
+
 .resumen{
     margin-top:20px;
     font-size:18px;
@@ -170,6 +178,14 @@ Cargar
 href="generar_excel.php?tipo=<?php echo $tipo; ?>&fecha=<?php echo $fecha; ?>">
 
 📥 Descargar Excel
+
+</a>
+
+<a class="btn_pdf"
+
+href="generar_pdf.php?tipo=<?php echo $tipo; ?>&fecha=<?php echo $fecha; ?>">
+
+📝 Descargar PDF
 
 </a>
 

@@ -106,11 +106,7 @@ table td{
 
 </button>
 
-<button class="btn" onclick="descargarExcel()">
 
-📥 Descargar Excel
-
-</button>
 
 </div>
 
