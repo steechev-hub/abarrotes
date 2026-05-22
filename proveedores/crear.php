@@ -37,11 +37,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         vendedor_telefono,
 
         gerente_nombre,
-        gerente_telefono
+        gerente_telefono,
+
+        activo
 
     )
 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
     ";
 
@@ -59,7 +61,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $vendedor_telefono,
 
         $gerente_nombre,
-        $gerente_telefono
+        $gerente_telefono,
+
+        1
 
     ]);
 

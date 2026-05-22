@@ -14,6 +14,9 @@ proveedores.nombre_empresa AS proveedor
 FROM compras
 INNER JOIN proveedores
 ON compras.proveedor_id = proveedores.id
+
+WHERE compras.tipo_pago = 'credito'
+
 ORDER BY compras.id DESC
 ";
 
@@ -299,7 +302,6 @@ foreach($compras as $c){
 <thead>
 
 <tr>
-    <th>ID</th>
     <th>Proveedor</th>
     <th>Fecha</th>
     <th>Total</th>
@@ -330,11 +332,6 @@ elseif($c['estado_pago'] == 'parcial'){
 ?>
 
 <tr>
-
-<td>
-<?php echo $c['id']; ?>
-</td>
-
 <td>
 <?php echo $c['proveedor']; ?>
 </td>
@@ -365,7 +362,26 @@ elseif($c['estado_pago'] == 'parcial'){
 
 <td>
 
-<a class="btn-abono" href="abonar.php?id=<?php echo $c['id']; ?>"> 💵 Abonar </a>
+<?php if($c['estado_pago'] != 'pagado'): ?>
+
+    <a
+    class="btn-abono"
+    href="abonar.php?id=<?php echo $c['id']; ?>">
+
+    💵 Abonar
+
+    </a>
+
+<?php else: ?>
+
+    <span style="
+        color:#28a745;
+        font-weight:bold;
+    ">
+        ✅ Liquidado
+    </span>
+
+<?php endif; ?>
 
 </td>
 

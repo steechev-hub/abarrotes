@@ -228,13 +228,6 @@ table td{
 
     </div>
 
-    <div class="card ajuste">
-
-        <p>⚙️ Ajustes</p>
-
-        <h2><?php echo $ajustes; ?></h2>
-
-    </div>
 
 </div>
 
@@ -264,8 +257,6 @@ table td{
 
 <a href="?tipo=merma">Mermas</a>
 
-<a href="?tipo=ajuste">Ajustes</a>
-
 </div>
 
 <table>
@@ -274,7 +265,6 @@ table td{
 
 <tr>
 
-<th>ID</th>
 <th>Producto</th>
 <th>Tipo</th>
 <th>Motivo</th>
@@ -311,7 +301,6 @@ if($m['tipo'] == 'merma'){
 
 <tr>
 
-<td><?php echo $m['id']; ?></td>
 
 <td><?php echo $m['producto']; ?></td>
 

@@ -132,7 +132,7 @@ table td{
 
 <label>Tipo de pago</label>
 
-<select id="tipo_pago">
+<select id="tipo_pago" onchange="mostrarPagoInicial()">
 
     <option value="contado">
         Contado
@@ -144,14 +144,29 @@ table td{
 
 </select>
 
-<label>💵 Pago inicial</label>
+<!-- FECHA DE COMPRA -->
+
+<label>📅 Fecha de compra</label>
 
 <input
-type="number"
-id="pagado"
-placeholder="0.00"
-step="0.01"
-value="0">
+type="date"
+id="fecha_compra"
+value="<?php echo date('Y-m-d'); ?>">
+
+<!-- PAGO INICIAL -->
+
+<div id="box_pago_inicial" style="display:none;">
+
+    <label>💵 Pago inicial</label>
+
+    <input
+    type="number"
+    id="pagado"
+    placeholder="0.00"
+    step="0.01"
+    value="0">
+
+</div>
 
 <hr><br>
 
@@ -181,6 +196,8 @@ data-nombre="<?php echo $p['nombre']; ?>"
 <input type="number" id="precio" placeholder="Costo compra">
 
 <input type="text" id="lote" placeholder="Lote">
+
+<label>📅 Fecha de caducidad</label>
 
 <input type="date" id="caducidad">
 
@@ -233,7 +250,37 @@ TOTAL: $0.00
 
 <script>
 
+    /* INICIAR */
+
+mostrarPagoInicial();
+
 let compra = [];
+
+/* =========================
+MOSTRAR PAGO INICIAL
+========================= */
+
+function mostrarPagoInicial(){
+
+    let tipo =
+        document.getElementById("tipo_pago").value;
+
+    let box =
+        document.getElementById("box_pago_inicial");
+
+    if(tipo == "credito"){
+
+        box.style.display = "block";
+
+    }else{
+
+        box.style.display = "none";
+
+        document.getElementById("pagado").value = 0;
+
+    }
+
+}
 
 function agregarProducto(){
 
@@ -268,15 +315,25 @@ function agregarProducto(){
     }
 
     compra.push({
+
         producto_id,
         nombre,
         cantidad,
         precio,
         lote,
         caducidad
+
     });
 
     render();
+
+    /* LIMPIAR CAMPOS */
+
+    document.getElementById("producto").value = "";
+    document.getElementById("cantidad").value = "";
+    document.getElementById("precio").value = "";
+    document.getElementById("lote").value = "";
+    document.getElementById("caducidad").value = "";
 
 }
 
@@ -322,10 +379,21 @@ function guardarCompra(){
     let tipo_pago =
         document.getElementById("tipo_pago").value;
 
-    let pagado =
-        parseFloat(
-            document.getElementById("pagado").value
-        ) || 0;
+    let fecha_compra =
+        document.getElementById("fecha_compra").value;
+
+    let pagado = 0;
+
+    /* SOLO SI ES CREDITO */
+
+    if(tipo_pago == "credito"){
+
+        pagado =
+            parseFloat(
+                document.getElementById("pagado").value
+            ) || 0;
+
+    }
 
     if(!proveedor_id){
 
@@ -353,6 +421,7 @@ function guardarCompra(){
 
             proveedor_id,
             tipo_pago,
+            fecha_compra,
             pagado,
             productos: compra
 
@@ -366,9 +435,22 @@ function guardarCompra(){
 
         if(resp.ok){
 
-            alert("Compra guardada correctamente");
+            alert("✅ Compra guardada correctamente");
 
-            location.reload();
+            /* LIMPIAR TODO */
+
+            compra = [];
+
+            render();
+
+            document.getElementById("proveedor").value = "";
+            document.getElementById("tipo_pago").value = "contado";
+            document.getElementById("fecha_compra").value =
+                "<?php echo date('Y-m-d'); ?>";
+
+            document.getElementById("pagado").value = "0";
+
+            mostrarPagoInicial();
 
         } else {
 
