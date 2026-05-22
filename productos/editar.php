@@ -224,6 +224,63 @@ select:focus{
 
     </div>
 
+    <!-- MEDIDA -->
+
+<div class="grid-2">
+
+    <div class="form-group">
+
+        <label>📏 Contenido</label>
+
+        <input
+        type="number"
+        step="0.01"
+        name="contenido_medida"
+        value="<?php echo $producto['contenido_medida']; ?>"
+        placeholder="Ejemplo: 600">
+
+    </div>
+
+    <div class="form-group">
+
+            <label>🧪 Unidad de medida</label>
+
+            <select name="unidad_medida">
+
+                <option value="">
+                    Seleccionar
+                </option>
+
+                <option
+                value="ml"
+                <?php echo ($producto['unidad_medida'] == 'ml') ? 'selected' : ''; ?>>
+                Mililitros (ml)
+                </option>
+
+                <option
+                value="L"
+                <?php echo ($producto['unidad_medida'] == 'L') ? 'selected' : ''; ?>>
+                Litros (L)
+                </option>
+
+                <option
+                value="g"
+                <?php echo ($producto['unidad_medida'] == 'g') ? 'selected' : ''; ?>>
+                Gramos (g)
+                </option>
+
+                <option
+                value="kg"
+                <?php echo ($producto['unidad_medida'] == 'kg') ? 'selected' : ''; ?>>
+                Kilogramos (kg)
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
     <!-- PRECIOS -->
 
     <div class="grid-2">

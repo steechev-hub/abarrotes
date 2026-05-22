@@ -10,21 +10,40 @@
 
     <div class="menu">
 
+        <!-- INICIO -->
         <a href="/surtete/index.php">
             🏠 <span>Inicio</span>
         </a>
+
+        <!-- VENTAS -->
+        <?php if(in_array($_SESSION['rol'], ['admin','cajero'])): ?>
 
         <a href="/surtete/ventas/pos.php">
             🛒 <span>Ventas</span>
         </a>
 
+        <?php endif; ?>
+
+        <!-- PRODUCTOS -->
+        <?php if(in_array($_SESSION['rol'], ['admin','cajero'])): ?>
+
         <a href="/surtete/productos/index.php">
             📦 <span>Productos</span>
         </a>
 
+        <?php endif; ?>
+
+        <!-- PROVEEDORES SOLO ADMIN -->
+        <?php if($_SESSION['rol'] == 'admin'): ?>
+
         <a href="/surtete/proveedores/proveedores.php">
             🚚 <span>Proveedores</span>
         </a>
+
+        <?php endif; ?>
+
+        <!-- COMPRAS -->
+        <?php if(in_array($_SESSION['rol'], ['admin','cajero'])): ?>
 
         <a href="/surtete/compras/crear.php">
             📥 <span>Compras</span>
@@ -34,34 +53,72 @@
             💳 <span>Cuentas por pagar</span>
         </a>
 
+        <?php endif; ?>
+
+        <!-- ALMACEN -->
+        <?php if(in_array($_SESSION['rol'], ['admin','cajero'])): ?>
+
         <a href="/surtete/almacen/index.php">
             🏬 <span>Almacén</span>
         </a>
+
+        <?php endif; ?>
+
+        <!-- INVENTARIO SOLO ADMIN -->
+        <?php if($_SESSION['rol'] == 'admin'): ?>
 
         <a href="/surtete/inventario/index.php">
             📊 <span>Movimientos de Inventario</span>
         </a>
 
+        <?php endif; ?>
+
+        <!-- MERMAS -->
+        <?php if(in_array($_SESSION['rol'], ['admin','cajero'])): ?>
+
         <a href="/surtete/inventario/agregar_movimiento.php">
             🔄 <span>Mermas</span>
         </a>
+
+        <?php endif; ?>
+
+        <!-- REPORTES SOLO ADMIN -->
+        <?php if($_SESSION['rol'] == 'admin'): ?>
 
         <a href="/surtete/reportes/index.php">
             📈 <span>Reportes</span>
         </a>
 
+        <?php endif; ?>
+
+        <!-- TICKETS -->
+        <?php if(in_array($_SESSION['rol'], ['admin','cajero'])): ?>
+
         <a href="/surtete/ventas/historial_tickets.php">
             🧾 <span>Historial de Tickets</span>
         </a>
 
+        <?php endif; ?>
+
+        <!-- CONFIGURACION SOLO ADMIN -->
         <?php if($_SESSION['rol'] == 'admin'): ?>
 
-            <a href="/surtete/configuracion/ticket.php">
-                ⚙️ <span>Configuración</span>
-            </a>
+        <a href="/surtete/configuracion/ticket.php">
+            ⚙️ <span>Configuración</span>
+        </a>
 
         <?php endif; ?>
 
+        <!-- USUARIOS SOLO ADMIN -->
+        <?php if($_SESSION['rol'] == 'admin'): ?>
+
+        <a href="/surtete/usuarios/index.php">
+            👥 <span>Usuarios</span>
+        </a>
+
+        <?php endif; ?>
+
+        <!-- LOGOUT -->
         <a href="/surtete/auth/logout.php">
             🚪 <span>Cerrar sesión</span>
         </a>

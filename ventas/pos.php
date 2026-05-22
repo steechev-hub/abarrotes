@@ -609,7 +609,13 @@ function render(){
         tbody.innerHTML += `
         <tr>
 
-            <td>${p.nombre}</td>
+            <td>${p.nombre}
+                ${
+                    p.contenido_medida && p.unidad_medida
+                    ? `(${p.contenido_medida} ${p.unidad_medida})`
+                    : ''
+                }
+            </td>
 
             <td>
                 $${parseFloat(

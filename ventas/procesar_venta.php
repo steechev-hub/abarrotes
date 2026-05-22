@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 header('Content-Type: application/json');
 
 error_reporting(E_ALL);
@@ -29,16 +31,18 @@ INSERT INTO ventas
 (
     total,
     recibido,
-    cambio
+    cambio,
+    usuario_id
 )
-VALUES(?,?,?)
+VALUES(?,?,?,?)
 ");
 
 $stmt->execute([
 
     $total,
     $recibido,
-    $cambio
+    $cambio,
+    $_SESSION['id']
 
 ]);
 

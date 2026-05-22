@@ -25,25 +25,25 @@ INSERT INTO productos (
 
     codigo_barras,
     nombre,
+    contenido_medida,
+    unidad_medida,
     precio_compra,
     precio_venta,
     stock,
-    categoria_id,
-    contenido_medida,
-    unidad_medida)
+    categoria_id
 
-VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
 $stmt->execute([
     $codigo_barras,
     $nombre,
+    $contenido_medida,
+    $unidad_medida,
     $precio_compra,
     $precio_venta,
     $stock,
-    $categoria_id,
-    $contenido_medida,
-    $unidad_medida
+    $categoria_id
 ]);
 
 /* ID PRODUCTO */
@@ -68,14 +68,6 @@ INSERT INTO movimientos_inventario
 )
 VALUES (?,?,?,?,?,?,?,?)
 ");
-
-/*
-tipo:
-entrada
-
-motivo:
-inventario_inicial
-*/
 
 $mov->execute([
 

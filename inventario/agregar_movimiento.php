@@ -139,8 +139,17 @@ select:focus{
 
                 <?php echo $p['nombre']; ?>
 
-                (Stock:
-                <?php echo $p['stock']; ?>)
+                <?php if($p['contenido_medida'] && $p['unidad_medida']): ?>
+
+                    (
+                    <?php echo $p['contenido_medida']; ?>
+                    <?php echo $p['unidad_medida']; ?>
+                    )
+
+                <?php endif; ?>
+
+                - Stock:
+                <?php echo $p['stock']; ?>
 
             </option>
 

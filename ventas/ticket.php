@@ -14,10 +14,17 @@ $stmt->execute([$id]);
 $venta = $stmt->fetch();
 
 $detalle = $conexion->prepare("
-SELECT detalle_venta.*, productos.nombre
+SELECT 
+detalle_venta.*, 
+productos.nombre,
+productos.contenido_medida,
+productos.unidad_medida
+
 FROM detalle_venta
+
 INNER JOIN productos
 ON detalle_venta.producto_id = productos.id
+
 WHERE venta_id = ?
 ");
 
@@ -146,8 +153,20 @@ CAJERO:
 
 <tr>
     <td>
+
         <?php echo $p['nombre']; ?>
+
+        <?php if($p['contenido_medida'] && $p['unidad_medida']): ?>
+
+            (
+            <?php echo $p['contenido_medida']; ?>
+            <?php echo $p['unidad_medida']; ?>
+            )
+
+        <?php endif; ?>
+
         x<?php echo $p['cantidad']; ?>
+
     </td>
 
     <td align="right">

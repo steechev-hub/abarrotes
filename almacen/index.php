@@ -330,7 +330,20 @@ elseif($p['stock'] <= 10){
 
 <td><?php echo $p['codigo_barras']; ?></td>
 
-<td><?php echo $p['nombre']; ?></td>
+<td>
+
+    <?php echo $p['nombre']; ?>
+
+    <?php if($p['contenido_medida'] && $p['unidad_medida']): ?>
+
+        (
+        <?php echo $p['contenido_medida']; ?>
+        <?php echo $p['unidad_medida']; ?>
+        )
+
+    <?php endif; ?>
+
+</td>
 
 <td><?php echo $p['categoria']; ?></td>
 

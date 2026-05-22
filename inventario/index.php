@@ -23,7 +23,9 @@ if(isset($_GET['tipo']) && $_GET['tipo'] != ''){
 $sql = "
 SELECT
 movimientos_inventario.*,
-productos.nombre AS producto
+productos.nombre AS producto,
+productos.contenido_medida,
+productos.unidad_medida
 FROM movimientos_inventario
 INNER JOIN productos
 ON movimientos_inventario.producto_id = productos.id
@@ -302,7 +304,20 @@ if($m['tipo'] == 'merma'){
 <tr>
 
 
-<td><?php echo $m['producto']; ?></td>
+<td>
+
+    <?php echo $m['producto']; ?>
+
+    <?php if($m['contenido_medida'] && $m['unidad_medida']): ?>
+
+        (
+        <?php echo $m['contenido_medida']; ?>
+        <?php echo $m['unidad_medida']; ?>
+        )
+
+    <?php endif; ?>
+
+</td>
 
 <td>
 

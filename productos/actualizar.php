@@ -6,6 +6,8 @@ UPDATE productos
 SET
 codigo_barras = ?,
 nombre = ?,
+contenido_medida = ?,
+unidad_medida = ?,
 precio_compra = ?,
 precio_venta = ?,
 stock = ?,
@@ -16,6 +18,8 @@ WHERE id = ?
 $stmt->execute([
     $_POST['codigo_barras'],
     $_POST['nombre'],
+    $contenido_medida = $_POST['contenido_medida'],
+    $unidad_medida = $_POST['unidad_medida'],
     $_POST['precio_compra'],
     $_POST['precio_venta'],
     $_POST['stock'],

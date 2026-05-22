@@ -11,6 +11,7 @@ $stmt->execute([$usuario, $password]);
 $user = $stmt->fetch();
 
 if($user){
+    $_SESSION['id'] = $user['id'];
     $_SESSION['usuario'] = $user['usuario'];
     $_SESSION['rol'] = $user['rol'];
 
