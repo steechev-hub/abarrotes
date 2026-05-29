@@ -11,6 +11,8 @@ if(!isset($_SESSION['usuario'])){
 
 $codigo_barras = $_POST['codigo_barras'];
 $nombre = $_POST['nombre'];
+$proveedor_id = $_POST['proveedor_id'];
+$marca = $_POST['marca'];
 $precio_compra = $_POST['precio_compra'];
 $precio_venta = $_POST['precio_venta'];
 $stock = $_POST['stock'];
@@ -25,6 +27,8 @@ INSERT INTO productos (
 
     codigo_barras,
     nombre,
+    proveedor_id,
+    marca,
     contenido_medida,
     unidad_medida,
     precio_compra,
@@ -32,12 +36,14 @@ INSERT INTO productos (
     stock,
     categoria_id
 
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
 $stmt->execute([
     $codigo_barras,
     $nombre,
+    $proveedor_id,
+    $marca,
     $contenido_medida,
     $unidad_medida,
     $precio_compra,

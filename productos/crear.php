@@ -11,6 +11,13 @@ $categorias = $conexion->query("
 SELECT * FROM categorias
 ORDER BY nombre ASC
 ")->fetchAll();
+
+$proveedores = $conexion->query("
+SELECT *
+FROM proveedores
+WHERE activo = 1
+ORDER BY nombre_empresa ASC
+")->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -302,6 +309,57 @@ select:focus{
 
     </div>
 
+    <div class="grid-2">
+
+        <div class="form-group">
+
+            <label>🚚 Proveedor</label>
+
+            <select
+            name="proveedor_id"
+            id="proveedor_id"
+            onchange="cargarMarca()"
+            required>
+
+                <option value="">
+                    Seleccionar proveedor
+                </option>
+
+                <?php foreach($proveedores as $p): ?>
+
+                    <option
+                    value="<?php echo $p['id']; ?>"
+                    data-marca="<?php echo $p['marca']; ?>">
+
+                        <?php echo $p['nombre_empresa']; ?>
+
+                    </option>
+
+                <?php endforeach; ?>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>🏷️ Marca</label>
+
+            <select
+            name="marca"
+            id="marca"
+            required>
+
+                <option value="">
+                    Seleccionar marca
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
     <!-- MEDIDA -->
 
     <div class="grid-2">
@@ -342,10 +400,6 @@ select:focus{
 
                 <option value="L">
                     Litros (L)
-                </option>
-
-                <option value="oz">
-                    Onzas (oz)
                 </option>
 
                 <option value="mg">
@@ -712,6 +766,53 @@ function detenerScanner(){
 </script>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<script>
+
+function cargarMarca(){
+
+    let proveedor =
+        document.getElementById("proveedor_id");
+
+    let opcion =
+        proveedor.options[proveedor.selectedIndex];
+
+    let marcas =
+        opcion.getAttribute("data-marca");
+
+    let selectMarca =
+        document.getElementById("marca");
+
+    /* LIMPIAR */
+
+    selectMarca.innerHTML =
+        '<option value="">Seleccionar marca</option>';
+
+    if(marcas){
+
+        let listaMarcas =
+            marcas.split(",");
+
+        listaMarcas.forEach(function(m){
+
+            let marca = m.trim();
+
+            let option =
+                document.createElement("option");
+
+            option.value = marca;
+
+            option.text = marca;
+
+            selectMarca.appendChild(option);
+
+        });
+
+    }
+
+}
+
+</script>
 
 </body>
 </html>

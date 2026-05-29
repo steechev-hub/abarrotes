@@ -34,6 +34,13 @@ SELECT *
 FROM categorias
 ORDER BY nombre ASC
 ")->fetchAll();
+
+$proveedores = $conexion->query("
+SELECT *
+FROM proveedores
+WHERE activo = 1
+ORDER BY nombre_empresa ASC
+")->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -221,6 +228,58 @@ select:focus{
         name="nombre"
         value="<?php echo $producto['nombre']; ?>"
         required>
+
+    </div>
+
+    <div class="grid-2">
+
+        <div class="form-group">
+
+            <label>🚚 Proveedor</label>
+
+            <select
+            name="proveedor_id"
+            id="proveedor_id"
+            onchange="cargarMarca()"
+            required>
+
+                <option value="">
+                    Seleccionar proveedor
+                </option>
+
+                <?php foreach($proveedores as $p): ?>
+
+                    <option
+                        value="<?php echo $p['id']; ?>"
+                        data-marca="<?php echo htmlspecialchars($p['marca']); ?>"
+                        <?php echo ($producto['proveedor_id'] == $p['id']) ? 'selected' : ''; ?>>
+
+                        <?php echo $p['nombre_empresa']; ?>
+
+                    </option>
+
+                <?php endforeach; ?>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>🏷️ Marca</label>
+
+            <select
+            name="marca"
+            id="marca"
+            required>
+
+                <option value="">
+                    Seleccionar marca
+                </option>
+
+            </select>
+
+        </div>
 
     </div>
 
@@ -480,5 +539,70 @@ calcularPrecios();
 
 </script>
 
+<script>
+
+function cargarMarca(){
+
+    let proveedor =
+        document.getElementById("proveedor_id");
+
+    let opcion =
+        proveedor.options[proveedor.selectedIndex];
+
+    let marcas =
+        opcion.getAttribute("data-marca");
+
+    let selectMarca =
+        document.getElementById("marca");
+
+    /* LIMPIAR */
+
+    selectMarca.innerHTML =
+        '<option value="">Seleccionar marca</option>';
+
+    if(!marcas){
+        return;
+    }
+
+    let listaMarcas =
+        marcas.split(",");
+
+    listaMarcas.forEach(function(m){
+
+        let marca = m.trim();
+
+        let option =
+            document.createElement("option");
+
+        option.value = marca;
+
+        option.text = marca;
+
+        /* SELECCIONAR MARCA ACTUAL */
+
+        if(marca ==
+            "<?php echo $producto['marca']; ?>"){
+
+            option.selected = true;
+
+        }
+
+        selectMarca.appendChild(option);
+
+    });
+
+}
+
+/* CARGAR AL ABRIR */
+
+window.onload = function(){
+
+    cargarMarca();
+
+    calcularPrecios();
+
+}
+
+</script>
 </body>
 </html>

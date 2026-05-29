@@ -267,10 +267,6 @@ placeholder="🔍 Buscar producto...">
 
 <div style="display:flex; gap:10px;">
 
-<a href="crear.php" class="btn">
-➕ Nuevo producto
-</a>
-
 <a href="../inventario/index.php" class="btn">
 📊 Inventario
 </a>

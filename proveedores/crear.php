@@ -7,6 +7,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     $nombre = $_POST['nombre'];
 
+    $marca = $_POST['marca'];
+
     $empresa_telefono = $_POST['empresa_telefono'];
 
     $email = $_POST['email'];
@@ -28,6 +30,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     INSERT INTO proveedores (
 
         nombre_empresa,
+        marca,
         empresa_telefono,
         email,
         empresa_direccion,
@@ -43,7 +46,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     )
 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
     ";
 
@@ -52,6 +55,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $stmt->execute([
 
         $nombre,
+        $marca,
         $empresa_telefono,
         $email,
         $empresa_direccion,
@@ -97,6 +101,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 <label>Nombre de la empresa</label>
 <input type="text" name="nombre" required>
 
+<label>🏷️ Marcas que maneja</label>
+
+<textarea
+name="marca"
+placeholder="Ejemplo: Coca Cola, Fanta, Sprite"
+></textarea>
+
 <label>Teléfono de la empresa</label>
 <input type="text" name="empresa_telefono">
 
@@ -105,6 +116,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 <label>Dirección de la empresa</label>
 <textarea name="empresa_direccion"></textarea>
+
 
 <label>Redes sociales</label>
 

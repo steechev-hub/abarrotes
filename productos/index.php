@@ -9,10 +9,20 @@ if(!isset($_SESSION['usuario'])){
 
 
 $sql = "
-SELECT productos.*, categorias.nombre AS categoria
+SELECT 
+    productos.*,
+    categorias.nombre AS categoria,
+    proveedores.nombre_empresa AS proveedor,
+    proveedores.marca AS marca
+
 FROM productos
+
 LEFT JOIN categorias 
 ON productos.categoria_id = categorias.id
+
+LEFT JOIN proveedores
+ON productos.proveedor_id = proveedores.id
+
 ORDER BY productos.id DESC
 ";
 
@@ -241,6 +251,9 @@ ORDER BY nombre ASC
     <h2>📦 Productos</h2>
 
     <div style="display:flex; gap:10px;">
+        <a href="crear.php" class="btn">
+        ➕ Nuevo producto
+        </a>
 
         <a href="../categorias/index.php" class="btn">
             🗂️ Categorías
@@ -261,6 +274,8 @@ ORDER BY nombre ASC
                 <th>Código</th>
                 <th>Producto</th>
                 <th>Categoría</th>
+                <th>Proveedor</th>
+                <th>Marca</th>
                 <th>Compra</th>
                 <th>Venta</th>
                 <th>Stock</th>
@@ -276,18 +291,16 @@ ORDER BY nombre ASC
 
                 <td><?php echo $p['codigo_barras']; ?></td>
                 <td><?php echo $p['nombre']; ?>
-
                 <?php if($p['contenido_medida'] && $p['unidad_medida']): ?>
-
                     (
                     <?php echo $p['contenido_medida']; ?>
                     <?php echo $p['unidad_medida']; ?>
                     )
-
                 <?php endif; ?>
-
                 </td>
                 <td><?php echo $p['categoria']; ?></td>
+                <td><?php echo $p['proveedor']; ?></td>
+                <td><?php echo $p['marca']; ?></td>
                 <td>$<?php echo $p['precio_compra']; ?></td>
                 <td>$<?php echo $p['precio_venta']; ?></td>
 
