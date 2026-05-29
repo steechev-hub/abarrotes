@@ -144,6 +144,17 @@ table td{
 
 </select>
 
+<div class="form-group" id="grupo-fecha" style="display:none;">
+
+    <label>📅 Fecha límite de pago</label>
+
+    <input
+    type="date"
+    name="fecha_limite"
+    id="fecha_limite">
+
+</div>
+
 <!-- FECHA DE COMPRA -->
 
 <label>📅 Fecha de compra</label>
@@ -382,6 +393,9 @@ function guardarCompra(){
     let fecha_compra =
         document.getElementById("fecha_compra").value;
 
+    let fecha_limite =
+        document.getElementById("fecha_limite").value;
+
     let pagado = 0;
 
     /* SOLO SI ES CREDITO */
@@ -422,6 +436,7 @@ function guardarCompra(){
             proveedor_id,
             tipo_pago,
             fecha_compra,
+            fecha_limite,
             pagado,
             productos: compra
 
@@ -469,6 +484,37 @@ function guardarCompra(){
     });
 
 }
+
+</script>
+
+<script>
+
+    const tipoPago =
+        document.getElementById("tipo_pago");
+
+    const grupoFecha =
+        document.getElementById("grupo-fecha");
+
+    const fechaLimite =
+        document.getElementById("fecha_limite");
+
+    tipoPago.addEventListener("change", function(){
+
+        if(this.value == "credito"){
+
+            grupoFecha.style.display = "block";
+
+            fechaLimite.required = true;
+
+        }else{
+
+            grupoFecha.style.display = "none";
+
+            fechaLimite.required = false;
+
+        }
+
+    });
 
 </script>
 

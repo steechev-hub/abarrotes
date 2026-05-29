@@ -152,6 +152,7 @@ CAJERO:
 <?php foreach($productos as $p): ?>
 
 <tr>
+
     <td>
 
         <?php echo $p['nombre']; ?>
@@ -165,13 +166,22 @@ CAJERO:
 
         <?php endif; ?>
 
-        x<?php echo $p['cantidad']; ?>
+        <br>
+
+        <small>
+            Precio: $
+            <?php echo number_format($p['precio'],2); ?>
+        </small>
 
     </td>
 
     <td align="right">
-        $<?php echo number_format($p['subtotal'],2); ?>
+
+        $
+        <?php echo number_format($p['subtotal'],2); ?>
+
     </td>
+
 </tr>
 
 <?php endforeach; ?>

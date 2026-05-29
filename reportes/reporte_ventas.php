@@ -214,9 +214,9 @@ href="generar_pdf.php?tipo=<?php echo $tipo; ?>&fecha=<?php echo $fecha; ?>">
 
 <th>Costo U.</th>
 
-<th>Venta U.</th>
+<th>PVP.</th>
 
-<th>Total Venta</th>
+<th>Total PVP</th>
 
 <th>Total Costo</th>
 
@@ -291,7 +291,7 @@ $<?php echo number_format($v['utilidad'],2); ?>
 <div class="resumen">
 
 <p>
-💰 Total Ventas:
+💰 Total PVP:
 <b>$<?php echo number_format($totalVentas,2); ?></b>
 </p>
 

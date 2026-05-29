@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include("../config/db.php");
+date_default_timezone_set('America/Mexico_City');
 
 $data = json_decode(file_get_contents("php://input"), true);
 
@@ -11,6 +12,15 @@ $proveedor_id = $data['proveedor_id'];
 $tipo_pago = $data['tipo_pago'] ?? 'contado';
 $pagado = $data['pagado'] ?? 0;
 $productos = $data['productos'];
+$fecha_limite = null;
+
+if($tipo_pago == 'credito'){
+
+    $fecha_limite =
+        $data['fecha_limite'] ?? null;
+
+}
+$fecha_compra = date('Y-m-d H:i:s');
 
 $total = 0;
 
@@ -46,22 +56,25 @@ INSERT INTO compras
     saldo,
     tipo_pago,
     estado_pago,
+    fecha_limite,
     estado
 )
 VALUES
 (
-    ?, NOW(), ?, ?, ?, ?, ?, 'recibido'
+    ?, ?, ?, ?, ?, ?, ?, ?, 'recibido'
 )
 ");
 
 $stmt->execute([
 
     $proveedor_id,
+    $fecha_compra,
     $total,
     $pagado,
     $saldo,
     $tipo_pago,
-    $estado_pago
+    $estado_pago,
+    $fecha_limite
 
 ]);
 

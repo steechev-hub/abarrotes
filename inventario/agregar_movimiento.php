@@ -207,6 +207,32 @@ select:focus{
 
     </div>
 
+    <div id="autorizacion-admin" style="display:none; margin-top:20px;">
+
+        <div class="form-group">
+
+            <label>👤 Usuario administrador</label>
+
+            <input
+            type="text"
+            name="admin_usuario"
+            id="admin_usuario">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>🔒 Contraseña administrador</label>
+
+            <input
+            type="password"
+            name="admin_password"
+            id="admin_password">
+
+        </div>
+
+    </div>
+
     <!-- CANTIDAD -->
 
     <div class="form-group">
@@ -234,6 +260,42 @@ select:focus{
 </div>
 
 </div>
+
+<script>
+
+    const motivo =
+        document.querySelector("select[name='motivo']");
+
+    const autorizacion =
+        document.getElementById("autorizacion-admin");
+
+    const usuarioAdmin =
+        document.getElementById("admin_usuario");
+
+    const passwordAdmin =
+        document.getElementById("admin_password");
+
+    motivo.addEventListener("change", function(){
+
+        if(this.value == "Salida cortesia"){
+
+            autorizacion.style.display = "block";
+
+            usuarioAdmin.required = true;
+            passwordAdmin.required = true;
+
+        }else{
+
+            autorizacion.style.display = "none";
+
+            usuarioAdmin.required = false;
+            passwordAdmin.required = false;
+
+        }
+
+    });
+
+</script>
 
 </body>
 </html>

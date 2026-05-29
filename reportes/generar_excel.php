@@ -125,9 +125,9 @@ $headers = [
     'Cantidad',
 
     'Costo Unitario',
-    'Precio Venta',
+    'PVP',
 
-    'Total Venta',
+    'Total PVP',
     'Total Costo',
 
     'Utilidad',

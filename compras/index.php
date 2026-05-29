@@ -304,6 +304,7 @@ foreach($compras as $c){
 <tr>
     <th>Proveedor</th>
     <th>Fecha</th>
+    <th>Fecha límite</th>
     <th>Total</th>
     <th>Pagado</th>
     <th>Saldo</th>
@@ -340,7 +341,30 @@ elseif($c['estado_pago'] == 'parcial'){
 <?php echo $c['fecha']; ?>
 </td>
 
-<td> $<?php echo number_format($c['total'],2); ?> </td>
+<td>
+
+<?php
+
+    if($c['fecha_limite']){
+
+        echo date(
+            'd/m/Y',
+            strtotime($c['fecha_limite'])
+        );
+
+    }else{
+
+        echo '-';
+
+    }
+
+    ?>
+
+    </td>
+
+    <td>
+    $<?php echo number_format($c['total'],2); ?>
+</td>
 
 <td> $<?php echo number_format($c['pagado'],2); ?> </td>
 

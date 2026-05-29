@@ -158,8 +158,8 @@ td{
 <th>Producto</th>
 <th>Cantidad</th>
 <th>Costo U.</th>
-<th>Venta U.</th>
-<th>Total Venta</th>
+<th>PVP.</th>
+<th>Total PVP</th>
 <th>Total Costo</th>
 <th>Utilidad</th>
 <th>Fecha</th>

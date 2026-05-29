@@ -14,7 +14,56 @@ $tipo = $_POST['tipo'];
 $motivo = $_POST['motivo'];
 $cantidad = intval($_POST['cantidad']);
 
-/* OBTENER PRODUCTO */
+/* =========================
+VALIDAR AUTORIZACION ADMIN
+========================= */
+
+if(trim($motivo) == 'Salida cortesia'){
+
+    $admin_usuario =
+        trim($_POST['admin_usuario']);
+
+    $admin_usuario = trim($_POST['admin_usuario']);
+    $admin_password = md5($_POST['admin_password']);
+
+    $admin = $conexion->prepare("
+    SELECT *
+    FROM usuarios
+    WHERE usuario = ?
+    AND password = ?
+    LIMIT 1
+    ");
+
+    $admin->execute([
+
+        $admin_usuario,
+        $admin_password
+
+    ]);
+
+    $adminData = $admin->fetch();
+
+    /* VALIDAR */
+  
+    if(!$adminData){
+
+        die("❌ Usuario o contraseña incorrectos");
+
+    }
+
+    /* VALIDAR ROL */
+
+    if(trim(strtolower($adminData['rol'])) != 'admin'){
+
+        die("❌ El usuario no tiene permisos de administrador");
+
+    }
+
+}
+
+/* =========================
+OBTENER PRODUCTO
+========================= */
 
 $stmt = $conexion->prepare("
 SELECT *
@@ -64,7 +113,9 @@ else{
     die("Tipo inválido");
 }
 
-/* ACTUALIZAR STOCK */
+/* =========================
+ACTUALIZAR STOCK
+========================= */
 
 $update = $conexion->prepare("
 UPDATE productos
@@ -79,7 +130,9 @@ $update->execute([
 
 ]);
 
-/* GUARDAR MOVIMIENTO */
+/* =========================
+GUARDAR MOVIMIENTO
+========================= */
 
 $mov = $conexion->prepare("
 INSERT INTO movimientos_inventario
@@ -108,6 +161,5 @@ $mov->execute([
 /* REDIRECCION */
 
 header("Location: index.php");
-
 exit();
 ?>
