@@ -14,7 +14,7 @@ $observacion = $_POST['observacion'];
 /* STOCK ACTUAL */
 
 $stmt = $conexion->prepare("
-SELECT stock
+SELECT stock_almacen
 FROM productos
 WHERE id = ?
 ");
@@ -23,7 +23,7 @@ $stmt->execute([$producto_id]);
 
 $producto = $stmt->fetch();
 
-$stock_anterior = $producto['stock'];
+$stock_anterior = $producto['stock_almacen'];
 
 $stock_nuevo =
     $stock_anterior + $cantidad;
@@ -32,7 +32,7 @@ $stock_nuevo =
 
 $update = $conexion->prepare("
 UPDATE productos
-SET stock = ?
+SET stock_almacen = ?
 WHERE id = ?
 ");
 

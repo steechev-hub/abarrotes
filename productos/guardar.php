@@ -15,7 +15,8 @@ $proveedor_id = $_POST['proveedor_id'];
 $marca = $_POST['marca'];
 $precio_compra = $_POST['precio_compra'];
 $precio_venta = $_POST['precio_venta'];
-$stock = $_POST['stock'];
+$_POST['stock_almacen'];
+$_POST['stock_piso'];
 $categoria_id = $_POST['categoria_id'];
 $contenido_medida = $_POST['contenido_medida'];
 $unidad_medida = $_POST['unidad_medida'];
@@ -33,10 +34,13 @@ INSERT INTO productos (
     unidad_medida,
     precio_compra,
     precio_venta,
-    stock,
+    stock_almacen,
+    stock_piso,
+    stock_minimo,
+    stock_maximo,
     categoria_id
 
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
 $stmt->execute([
@@ -48,7 +52,10 @@ $stmt->execute([
     $unidad_medida,
     $precio_compra,
     $precio_venta,
-    $stock,
+    $stock_almacen = $_POST['stock_almacen'],
+    $stock_piso = $_POST['stock_piso'],
+    $_POST['stock_minimo'],
+    $_POST['stock_maximo'],
     $categoria_id
 ]);
 
@@ -80,9 +87,9 @@ $mov->execute([
     $producto_id,
     'entrada',
     'inventario_inicial',
-    $stock,
+    $stock_almacen,
     0,
-    $stock,
+    $stock_almacen,
     $producto_id,
     'productos'
 

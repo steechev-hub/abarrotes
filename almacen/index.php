@@ -271,6 +271,10 @@ placeholder="🔍 Buscar producto...">
 📊 Inventario
 </a>
 
+<a href="transferir.php" class="btn">
+🔄 Transferir a piso
+</a>
+
 <a href="entrada_compra.php" class="btn">
 📥 Entrada compra
 </a>
@@ -298,7 +302,7 @@ placeholder="🔍 Buscar producto...">
 <th>Categoría</th>
 <th>Compra</th>
 <th>Venta</th>
-<th>Stock</th>
+<th>Stock Almacén</th>
 <th>Acciones</th>
 
 </tr>
@@ -355,7 +359,7 @@ $<?php echo number_format($p['precio_venta'],2); ?>
 
 <span class="stock <?php echo $clase; ?>">
 
-<?php echo $p['stock']; ?>
+<?php echo $p['stock_almacen']; ?>
 
 </span>
 

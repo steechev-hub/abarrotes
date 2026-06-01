@@ -93,7 +93,7 @@ foreach($data['productos'] as $p){
     SELECT *
     FROM lotes
     WHERE producto_id = ?
-    AND stock > 0
+    AND stock_piso > 0
     ORDER BY fecha_caducidad ASC
     ");
 
@@ -106,7 +106,7 @@ foreach($data['productos'] as $p){
     /* STOCK ACTUAL PRODUCTO */
 
     $stockActual = $conexion->prepare("
-    SELECT stock
+    SELECT stock_piso
     FROM productos
     WHERE id = ?
     ");
@@ -117,7 +117,7 @@ foreach($data['productos'] as $p){
 
     $actual = $stockActual->fetch();
 
-    $stock_anterior = $actual['stock'];
+    $stock_anterior = $actual['stock_piso'];
 
     /* RECORRER LOTES */
 
@@ -127,7 +127,7 @@ foreach($data['productos'] as $p){
             break;
         }
 
-        $stock_lote = $lote['stock'];
+        $stock_lote = $lote['stock_piso'];
 
         /* DESCONTAR */
 
@@ -143,7 +143,7 @@ foreach($data['productos'] as $p){
 
         $updateLote = $conexion->prepare("
         UPDATE lotes
-        SET stock = ?
+        SET stock_piso = ?
         WHERE id = ?
         ");
 
@@ -168,7 +168,7 @@ foreach($data['productos'] as $p){
 
     $updateProducto = $conexion->prepare("
     UPDATE productos
-    SET stock = ?
+    SET stock_piso = ?
     WHERE id = ?
     ");
 

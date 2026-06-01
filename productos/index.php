@@ -12,17 +12,12 @@ $sql = "
 SELECT 
     productos.*,
     categorias.nombre AS categoria,
-    proveedores.nombre_empresa AS proveedor,
-    proveedores.marca AS marca
-
+    proveedores.nombre_empresa AS proveedor
 FROM productos
-
 LEFT JOIN categorias 
 ON productos.categoria_id = categorias.id
-
 LEFT JOIN proveedores
 ON productos.proveedor_id = proveedores.id
-
 ORDER BY productos.id DESC
 ";
 
@@ -200,9 +195,9 @@ table td{
 <?php
 
 $criticos = $conexion->query("
-SELECT nombre, stock
+SELECT nombre, stock, stock_minimo
 FROM productos
-WHERE stock <= 5
+WHERE stock <= stock_minimo
 LIMIT 5
 ")->fetchAll();
 
@@ -224,8 +219,8 @@ ORDER BY nombre ASC
     <?php foreach($criticos as $c): ?>
 
         <p>
-            • <?php echo $c['nombre']; ?>
-            (<?php echo $c['stock']; ?>)
+        • <?php echo $c['nombre']; ?>
+        (<?php echo $c['stock']; ?>/<?php echo $c['stock_minimo']; ?>)
         </p>
 
     <?php endforeach; ?>
@@ -278,7 +273,9 @@ ORDER BY nombre ASC
                 <th>Marca</th>
                 <th>Compra</th>
                 <th>Venta</th>
-                <th>Stock</th>
+                <th>S. Actual</th>
+                <th>S. Mínimo</th>
+                <th>S. Máximo</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -308,18 +305,23 @@ ORDER BY nombre ASC
 
                 $clase = 'normal';
 
-                if($p['stock'] <= 5){
+                if($p['stock'] <= $p['stock_minimo']){
                     $clase = 'bajo';
                 }
-                elseif($p['stock'] <= 10){
+                elseif($p['stock'] <= ($p['stock_minimo'] + 5)){
                     $clase = 'medio';
+                }
+                else{
+                    $clase = 'normal';
                 }
 
                 ?>
 
                 <td class="stock <?php echo $clase; ?>">
-                    <?php echo $p['stock']; ?>
+                    <?php echo $p['stock_piso']; ?>
                 </td>
+                <td><?php echo $p['stock_minimo']; ?></td>
+                <td><?php echo $p['stock_maximo']; ?></td>
 
                 <td class="acciones">
                     <a href="editar.php?id=<?php echo $p['id']; ?>">✏️</a>

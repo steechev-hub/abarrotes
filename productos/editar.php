@@ -431,15 +431,52 @@ select:focus{
 
     <!-- STOCK -->
 
-    <div class="form-group">
+    <div class="grid-2">
 
-        <label>📦 Stock</label>
+        <div class="form-group">
 
-        <input
-        type="number"
-        name="stock"
-        value="<?php echo $producto['stock']; ?>"
-        required>
+                <label>🏬 Stock almacén</label>
+
+                <input
+                type="number"
+                name="stock_almacen"
+                value="<?php echo $producto['stock_almacen']; ?>"
+                required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>🏪 Stock piso</label>
+
+                <input
+                type="number"
+                name="stock_piso"
+                value="<?php echo $producto['stock_piso']; ?>"
+                required>
+
+            </div>
+
+        </div>
+        <div class="grid-2">
+
+            <div class="form-group">
+                <label>⚠️ Stock mínimo</label>
+                <input
+                type="number"
+                name="stock_minimo"
+                value="<?php echo $producto['stock_minimo']; ?>"
+                required>
+            </div>
+
+            <div class="form-group">
+                <label>📦 Stock máximo</label>
+                <input
+                type="number"
+                name="stock_maximo"
+                value="<?php echo $producto['stock_maximo']; ?>"
+                required>
+            </div>
 
     </div>
 

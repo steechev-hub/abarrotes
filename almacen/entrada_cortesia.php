@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     /* OBTENER STOCK ACTUAL */
 
     $stmt = $conexion->prepare("
-    SELECT stock
+    SELECT stock_almacen
     FROM productos
     WHERE id = ?
     ");
@@ -38,13 +38,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     if($producto){
 
         $nuevo_stock =
-            $producto['stock'] + $cantidad;
+            $producto['stock_almacen'] + $cantidad;
 
         /* ACTUALIZAR STOCK */
 
         $update = $conexion->prepare("
         UPDATE productos
-        SET stock = ?
+        SET stock_almacen =  ?
         WHERE id = ?
         ");
 
