@@ -7,17 +7,16 @@ if(!isset($_SESSION['usuario'])){
     exit();
 }
 
-$sql = "
+if($_SESSION['rol'] == 'cajero'){
+    header("Location: ../index.php");
+    exit();
+}
 
+$sql = " 
 SELECT *
-
 FROM proveedores
-
 WHERE activo = 1
-
-ORDER BY id DESC
-
-";
+ORDER BY id DESC";
 
 $stmt = $conexion->query($sql);
 $proveedores = $stmt->fetchAll();

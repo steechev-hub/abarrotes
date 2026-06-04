@@ -2,6 +2,11 @@
 session_start();
 include("../config/db.php");
 
+if($_SESSION['rol'] == 'cajero'){
+    header("Location: ../index.php");
+    exit();
+}
+
 $config = $conexion->query("
 SELECT *
 FROM configuracion_ticket

@@ -340,125 +340,87 @@ table td{
 <body>
 
 <div class="container">
-
     <!-- IZQUIERDA -->
-
     <div class="left">
-
         <div class="topbar">
-
             <h2>🛒 Punto de Venta</h2>
-
             <div class="fecha">
                 <?php echo date("d/m/Y H:i"); ?>
             </div>
-
         </div>
 
         <div class="scan-box">
-
             <div class="scan-flex">
-
                 <input
                 type="text"
                 id="codigo"
                 placeholder="🔍 Escanea, código o nombre del producto"
                 autofocus
                 autocomplete="off">
-
                 <button
                 type="button"
                 class="btn-scan"
-                onclick="abrirScanner()">
-
-                📷 Escanear
-
+                onclick="abrirScanner()">📷 Escanear
                 </button>
-
             </div>
 
             <!-- CAMARA -->
-
             <div id="reader"></div>
 
         </div>
 
         <div class="table-box">
-
             <table id="tabla">
-
                 <thead>
-
                     <tr>
                         <th>Producto</th>
                         <th>Precio</th>
                         <th>Cant</th>
                         <th>Subtotal</th>
                     </tr>
-
                 </thead>
-
-                <tbody></tbody>
-
             </table>
-
         </div>
-
     </div>
 
     <!-- DERECHA -->
-
     <div class="right">
-
         <div class="total-box">
-
             <p>TOTAL</p>
-
             <h1 id="total">$0.00</h1>
-
         </div>
 
         <div class="input-group">
-
             <label>💵 Dinero recibido</label>
-
             <input
             type="number"
             id="recibido"
             placeholder="0.00"
             step="0.01">
-
         </div>
 
         <div class="cambio">
-
             <p>💰 Cambio</p>
-
             <h1 id="cambio">$0.00</h1>
-
         </div>
 
         <!-- BOTONES -->
 
         <div class="botones">
-
             <button
             class="btn pagar"
             onclick="pagar()">
             💳 Cobrar
             </button>
-
             <button
             class="btn cancelar"
             onclick="cancelar()">
             ❌ Cancelar
             </button>
-
             <button
             class="btn ticket">
             🧾 Tickets
             </button>
-
             <button
             class="btn buscar">
             🔎 Buscar
@@ -469,23 +431,14 @@ table td{
         <!-- ACCIONES -->
 
         <div class="quick-actions">
-
             <h3>⚡ Acciones rápidas</h3>
-
             <div class="quick-grid">
-
-
                 <div class="back-container">
-                <a href="../index.php" class="btn-back">⬅ Regresar al menú principal</a>
-
+                    <a href="../index.php" class="btn-back">⬅ Regresar al menú principal</a>
+                </div>
             </div>
-
-            </div>
-
         </div>
-
     </div>
-
 </div>
 
 <script>
@@ -495,95 +448,60 @@ let totalGeneral = 0;
 
 const codigoInput =
     document.getElementById("codigo");
-
 /* FOCUS */
 
 codigoInput.focus();
-
 /* =========================
 BUSCAR PRODUCTO
 ========================= */
 
 function buscarProducto(codigo){
-
     fetch("buscar_producto.php?codigo=" + codigo)
-
     .then(res => res.json())
-
     .then(data => {
-
         if(data.error){
-
             alert("❌ Producto no encontrado");
             return;
-
         }
-
         agregarProducto(data);
-
         codigoInput.focus();
-
     })
-
     .catch(error => {
-
         console.log(error);
-
         alert("Error al buscar producto");
-
     });
-
 }
 
 /* =========================
 ESCANEO RAPIDO
 ========================= */
-
 codigoInput.addEventListener("keypress", function(e){
-
     if(e.key === "Enter"){
-
         let codigo = this.value.trim();
-
         if(codigo == ""){
             return;
         }
-
         this.value = "";
-
         document
         .getElementById("beep")
         .play();
-
         buscarProducto(codigo);
-
     }
-
 });
 
 /* =========================
 AGREGAR PRODUCTO
 ========================= */
-
 function agregarProducto(producto){
-
     let existente =
         carrito.find(p => p.id == producto.id);
-
     if(existente){
-
         existente.cantidad++;
-
     }else{
-
         producto.cantidad = 1;
-
         carrito.push(producto);
-
     }
-
     render();
-
 }
 
 /* =========================
@@ -591,24 +509,16 @@ RENDER TABLA
 ========================= */
 
 function render(){
-
     let tbody =
         document.querySelector("#tabla tbody");
-
     tbody.innerHTML = "";
-
     let total = 0;
-
     carrito.forEach((p,index) => {
-
         let subtotal =
             parseFloat(p.precio_venta) * p.cantidad;
-
         total += subtotal;
-
         tbody.innerHTML += `
         <tr>
-
             <td>${p.nombre}
                 ${
                     p.contenido_medida && p.unidad_medida
@@ -624,17 +534,9 @@ function render(){
             </td>
 
             <td>
-
-                <button onclick="restar(${index})">
-                ➖
-                </button>
-
+                <button onclick="restar(${index})"> ➖</button>
                 ${p.cantidad}
-
-                <button onclick="sumar(${index})">
-                ➕
-                </button>
-
+                <button onclick="sumar(${index})"> ➕ </button>
             </td>
 
             <td>
@@ -660,9 +562,7 @@ SUMAR
 ========================= */
 
 function sumar(index){
-
     carrito[index].cantidad++;
-
     render();
 
 }
@@ -672,17 +572,11 @@ RESTAR
 ========================= */
 
 function restar(index){
-
     carrito[index].cantidad--;
-
     if(carrito[index].cantidad <= 0){
-
         carrito.splice(index,1);
-
     }
-
     render();
-
 }
 
 /* =========================
@@ -711,16 +605,13 @@ function calcularCambio(){
 
         document.getElementById("cambio")
         .style.color = "red";
-
     }else{
-
         document.getElementById("cambio")
         .innerHTML =
         "$" + cambio.toFixed(2);
 
         document.getElementById("cambio")
         .style.color = "#28c76f";
-
     }
 
 }
@@ -730,112 +621,77 @@ PAGAR
 ========================= */
 
 function pagar(){
-
     if(carrito.length <= 0){
-
         alert("❌ No hay productos");
         return;
-
     }
-
     let recibido =
         parseFloat(
             document.getElementById("recibido").value
         ) || 0;
 
     if(recibido < totalGeneral){
-
         alert("❌ Dinero insuficiente");
         return;
-
     }
 
     fetch("procesar_venta.php", {
-
         method:"POST",
-
         headers:{
             "Content-Type":"application/json"
         },
 
         body: JSON.stringify({
-
             productos: carrito,
             recibido: recibido
-
         })
 
     })
 
     .then(res => res.json())
-
     .then(resp => {
-
         if(resp.ok){
-
             alert("✅ Venta realizada");
-
             window.open(
                 "ticket.php?id=" + resp.venta_id,
                 "_blank"
             );
-
             carrito = [];
-
             render();
-
             document
             .getElementById("recibido")
             .value = "";
-
             document
             .getElementById("cambio")
             .innerHTML = "$0.00";
-
             codigoInput.focus();
-
         }else{
-
             alert("Error al guardar venta");
-
         }
-
     })
-
     .catch(error => {
-
         console.log(error);
-
         alert("Error servidor");
-
     });
-
 }
 
 /* =========================
 CANCELAR
 ========================= */
-
 function cancelar(){
-
     carrito = [];
-
     render();
-
     document
     .getElementById("recibido")
     .value = "";
-
     document
     .getElementById("cambio")
     .innerHTML = "$0.00";
-
 }
 
 /* =========================
 BOTON TICKETS
 ========================= */
-
 document.querySelector(".ticket")
 .addEventListener("click", () => {
 
@@ -850,38 +706,28 @@ BOTON BUSCAR
 
 document.querySelector(".buscar")
 .addEventListener("click", () => {
-
     let codigo =
         prompt("Buscar código:");
-
     if(codigo){
-
         document
         .getElementById("codigo")
         .value = codigo;
-
         buscarProducto(codigo);
-
     }
-
 });
 
 
 /* =========================
 SCANNER CAMARA
 ========================= */
-
 let scanner = null;
 let scannerActivo = false;
 
 /* =========================
 ABRIR SCANNER
 ========================= */
-
 function abrirScanner(){
-
     if(scannerActivo){
-
         cerrarScanner();
         return;
 
@@ -915,119 +761,67 @@ function abrirScanner(){
                     nombre.includes("environment") ||
                     nombre.includes("trasera")
                 ){
-
                     camaraTrasera = camera.id;
-
                 }
-
             });
-
             scanner.start(
-
                 camaraTrasera,
-
                 {
-
                     fps:15,
-
                     qrbox:{
                         width:300,
                         height:150
                     },
-
                     aspectRatio:1.777778,
-
                     formatsToSupport:[
-
                         Html5QrcodeSupportedFormats.EAN_13,
                         Html5QrcodeSupportedFormats.EAN_8,
                         Html5QrcodeSupportedFormats.UPC_A,
                         Html5QrcodeSupportedFormats.UPC_E,
                         Html5QrcodeSupportedFormats.CODE_128,
                         Html5QrcodeSupportedFormats.CODE_39
-
                     ]
-
                 },
-
                 function(decodedText){
-
                     /* PONER CODIGO */
-
                     document.getElementById("codigo")
                     .value = decodedText;
-
                     /* SONIDO */
-
                     document.getElementById("beep")
                     .play();
-
                     /* BUSCAR PRODUCTO */
-
                     buscarProducto(decodedText);
-
-                    /* CERRAR */
-
                     cerrarScanner();
-
                 },
-
                 function(error){
-
-                    /* IGNORAR */
-
                 }
-
             );
-
             scannerActivo = true;
-
         }
-
     })
-
     .catch(err => {
-
         console.log(err);
-
         alert("No se pudo abrir la cámara");
-
     });
-
 }
 
 /* =========================
 CERRAR SCANNER
 ========================= */
-
 function cerrarScanner(){
-
     if(scanner){
-
         scanner.stop()
-
         .then(() => {
-
             scanner.clear();
-
             document.getElementById("reader")
             .style.display = "none";
-
             scannerActivo = false;
-
         })
-
         .catch(err => {
-
             console.log(err);
-
         });
-
     }
-
 }
-
-
 </script>
 
 <audio id="beep" preload="auto">

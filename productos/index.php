@@ -7,7 +7,6 @@ if(!isset($_SESSION['usuario'])){
     exit();
 }
 
-
 $sql = "
 SELECT 
     productos.*,
@@ -26,7 +25,7 @@ $productos = $stmt->fetchAll();
 $stmt_stock = $conexion->query("
     SELECT COUNT(*) AS total
     FROM productos
-    WHERE stock <= 5
+    WHERE stock_almacen <= 5
 ");
 
 $caducados = $conexion->query("
@@ -254,10 +253,6 @@ ORDER BY nombre ASC
             🗂️ Categorías
         </a>
 
-        <a href="../almacen/index.php" class="btn">
-            🏪 Ir a almacén
-        </a>
-
     </div>
 
 </div>
@@ -271,12 +266,10 @@ ORDER BY nombre ASC
                 <th>Categoría</th>
                 <th>Proveedor</th>
                 <th>Marca</th>
-                <th>Compra</th>
-                <th>Venta</th>
+                <th>Precio</th>
                 <th>S. Actual</th>
                 <th>S. Mínimo</th>
-                <th>S. Máximo</th>
-                <th>Acciones</th>
+                <th>Ubicación</th>
             </tr>
         </thead>
 
@@ -298,17 +291,15 @@ ORDER BY nombre ASC
                 <td><?php echo $p['categoria']; ?></td>
                 <td><?php echo $p['proveedor']; ?></td>
                 <td><?php echo $p['marca']; ?></td>
-                <td>$<?php echo $p['precio_compra']; ?></td>
                 <td>$<?php echo $p['precio_venta']; ?></td>
 
                 <?php
 
                 $clase = 'normal';
-
-                if($p['stock'] <= $p['stock_minimo']){
+                if($p['stock_almacen'] <= $p['stock_minimo']){
                     $clase = 'bajo';
                 }
-                elseif($p['stock'] <= ($p['stock_minimo'] + 5)){
+                elseif($p['stock_almacen'] <= ($p['stock_minimo'] + 5)){
                     $clase = 'medio';
                 }
                 else{
@@ -321,12 +312,6 @@ ORDER BY nombre ASC
                     <?php echo $p['stock_piso']; ?>
                 </td>
                 <td><?php echo $p['stock_minimo']; ?></td>
-                <td><?php echo $p['stock_maximo']; ?></td>
-
-                <td class="acciones">
-                    <a href="editar.php?id=<?php echo $p['id']; ?>">✏️</a>
-                    <a href="eliminar.php?id=<?php echo $p['id']; ?>"onclick="return confirm('¿Eliminar producto?')">🗑️</a>
-                </td>
 
             </tr>
 
@@ -335,37 +320,22 @@ ORDER BY nombre ASC
         <?php if(count($caducados) > 0): ?>
 
             <div class="card-alerta">
-
             <h3>⚠️ Productos próximos a caducar</h3>
-
             <?php foreach($caducados as $c): ?>
-
-            <p>
-
-            • <?php echo $c['nombre']; ?>
-
+            <p>• <?php echo $c['nombre']; ?>
             | Caduca:
             <?php echo $c['fecha_caducidad']; ?>
-
             | Stock:
             <?php echo $c['stock']; ?>
-
             </p>
-
             <?php endforeach; ?>
-
             </div>
-
             <?php endif; ?>
 
         </tbody>
-
     </table>
-
 </div>
-
 </div>
-
 
 <script>
 

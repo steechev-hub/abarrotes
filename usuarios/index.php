@@ -7,6 +7,11 @@ if(!isset($_SESSION['usuario'])){
     exit();
 }
 
+if($_SESSION['rol'] == 'cajero'){
+    header("Location: ../index.php");
+    exit();
+}
+
 /* OBTENER USUARIOS */
 
 $stmt = $conexion->query("

@@ -4,7 +4,8 @@ include("../config/db.php");
 if(isset($_GET['id'])){
 
     $stmt = $conexion->prepare("
-        DELETE FROM productos
+        UPDATE productos
+        SET activo = 0
         WHERE id = ?
     ");
 
@@ -12,3 +13,4 @@ if(isset($_GET['id'])){
 }
 
 header("Location: index.php");
+exit();

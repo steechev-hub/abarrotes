@@ -6,6 +6,11 @@ if(!isset($_SESSION['usuario'])){
     header("Location: ../auth/login.php");
     exit();
 }
+
+if($_SESSION['rol'] == 'cajero'){
+    header("Location: ../index.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>

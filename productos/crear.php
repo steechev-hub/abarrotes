@@ -521,6 +521,15 @@ select:focus{
             required>
         </div>
 
+        <div class="form-group">
+            <label>📍 Ubicación en almacén</label>
+            <input
+            type="text"
+            name="ubicacion"
+            placeholder="Ejemplo: Anaquel 1, Estante 10">
+
+        </div>
+
     </div>
         
         <div class="grid-2">

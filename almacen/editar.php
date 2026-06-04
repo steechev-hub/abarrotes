@@ -443,21 +443,19 @@ select:focus{
                 value="<?php echo $producto['stock_almacen']; ?>"
                 required>
 
-            </div>
-
-            <div class="form-group">
-
-                <label>🏪 Stock piso</label>
-
-                <input
-                type="number"
-                name="stock_piso"
-                value="<?php echo $producto['stock_piso']; ?>"
-                required>
-
-            </div>
-
         </div>
+    </div>
+    <div class="form-group">
+
+        <label>📍 Ubicación en almacén</label>
+
+        <input
+        type="text"
+        name="ubicacion"
+        value="<?php echo $producto['ubicacion']; ?>"
+        placeholder="Ejemplo: Anaquel 1, Estante 10">
+
+    </div>
         <div class="grid-2">
 
             <div class="form-group">

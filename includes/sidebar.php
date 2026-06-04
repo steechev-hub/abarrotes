@@ -56,10 +56,10 @@
         <?php endif; ?>
 
         <!-- ALMACEN -->
-        <?php if(in_array($_SESSION['rol'], ['admin','cajero'])): ?>
+        <?php if($_SESSION['rol']== 'admin'): ?>
 
         <a href="/surtete/almacen/index.php">
-            🏬 <span>Almacén</span>
+            🏬 <span>Inventario de Almacén</span>
         </a>
 
         <?php endif; ?>

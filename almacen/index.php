@@ -7,27 +7,32 @@ if(!isset($_SESSION['usuario'])){
     exit();
 }
 
-/* PRODUCTOS ALMACEN */
+if($_SESSION['rol'] == 'cajero'){
+    header("Location: ../index.php");
+    exit();
+}
 
+/* PRODUCTOS ALMACEN */
 $sql = "
 SELECT
-productos.*,
-categorias.nombre AS categoria
+    productos.*,
+    categorias.nombre AS categoria,
+    proveedores.nombre_empresa AS proveedor
 FROM productos
 LEFT JOIN categorias
-ON productos.categoria_id = categorias.id
+    ON productos.categoria_id = categorias.id
+LEFT JOIN proveedores
+    ON productos.proveedor_id = proveedores.id
 ORDER BY productos.id DESC
 ";
-
 $stmt = $conexion->query($sql);
 $productos = $stmt->fetchAll();
 
 /* STOCK BAJO */
-
 $stmt_stock = $conexion->query("
 SELECT COUNT(*) AS total
 FROM productos
-WHERE stock <= 5
+WHERE stock_almacen <= 5
 ");
 
 $stock_bajo = $stmt_stock->fetch()['total'];
@@ -200,35 +205,27 @@ table td{
 
         <h2>
             <?php
-
             $entradas = $conexion->query("
             SELECT IFNULL(SUM(cantidad),0) total
             FROM movimientos_inventario
             WHERE tipo='entrada'
             ")->fetch()['total'];
-
             echo $entradas;
-
             ?>
         </h2>
 
     </div>
 
     <div class="card">
-
         <p>📤 Salidas</p>
-
         <h2>
             <?php
-
             $salidas = $conexion->query("
             SELECT IFNULL(SUM(cantidad),0) total
             FROM movimientos_inventario
             WHERE tipo='salida'
             ")->fetch()['total'];
-
             echo $salidas;
-
             ?>
         </h2>
 
@@ -239,151 +236,89 @@ table td{
 <!-- ALERTA -->
 
 <?php if($stock_bajo > 0): ?>
+    <div class="alerta-stock">⚠️ Hay <?php echo $stock_bajo; ?> productos con stock bajo</div>
+            <?php endif; ?>
 
-<div class="alerta-stock">
-
-⚠️ Hay <?php echo $stock_bajo; ?> productos con stock bajo
-
-</div>
-
-<?php endif; ?>
-
-<!-- TABLA -->
-
-<div class="table-container">
-
-<div class="search-box">
-
-<input
-type="text"
-id="buscar"
-placeholder="🔍 Buscar producto...">
-
-</div>
-
-<div class="top-actions">
-
-<h2>🏬 Almacén</h2>
-
-<div style="display:flex; gap:10px;">
-
-<a href="../inventario/index.php" class="btn">
-📊 Inventario
-</a>
-
-<a href="transferir.php" class="btn">
-🔄 Transferir a piso
-</a>
-
-<a href="entrada_compra.php" class="btn">
-📥 Entrada compra
-</a>
-
-<a href="entrada_cortesia.php" class="btn">
-📥 Entrada cortesia
-</a>
-
-<a href="../compras/index.php" class="btn">
-📥 Compras
-</a>
-
-</div>
-
-</div>
-
+            <!-- TABLA -->
+            <div class="table-container">
+            <div class="search-box">
+                <input type="text" id="buscar" placeholder="🔍 Buscar producto...">
+            </div>
+            <div class="top-actions">
+            <h2>🏬 Almacén</h2>
+            <div style="display:flex; gap:10px;">
+            <a href="../inventario/index.php" class="btn"> 📊 Inventario</a>
+            <a href="transferir.php" class="btn"> 🔄 Transferir a piso</a>
+            <a href="entrada_compra.php" class="btn"> 📥 Entrada compra</a>
+            <a href="entrada_cortesia.php" class="btn"> 🎁 Entrada cortesia</a>
+            <a href="pedidos_proveedor.php" class="btn"> 📋 Pedidos Proveedor</a>
+            <a href="../compras/index.php" class="btn"> 📥 Compras</a>
+            </div>
+    </div>
 <table>
 
-<thead>
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Marca</th>
+            <th>Compra</th>
+            <th>Venta</th>
+            <th>Stock Almacén</th>
+            <th>Ubicación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
 
-<tr>
+    <tbody id="tabla-productos">
 
-<th>Código</th>
-<th>Producto</th>
-<th>Categoría</th>
-<th>Compra</th>
-<th>Venta</th>
-<th>Stock Almacén</th>
-<th>Acciones</th>
+    <?php foreach($productos as $p): ?>
 
-</tr>
+    <?php
 
-</thead>
+    $clase = 'normal';
 
-<tbody id="tabla-productos">
+    if($p['stock_almacen'] <= 5){
+        $clase = 'bajo';
+    }
+    elseif($p['stock_almacen'] <= 10){
+        $clase = 'medio';
+    }
 
-<?php foreach($productos as $p): ?>
+    ?>
 
-<?php
+    <tr>
 
-$clase = 'normal';
+        <td><?php echo $p['codigo_barras']; ?></td>
 
-if($p['stock'] <= 5){
-    $clase = 'bajo';
-}
-elseif($p['stock'] <= 10){
-    $clase = 'medio';
-}
+        <td>
+            <?php echo $p['nombre']; ?>
+            <?php if($p['contenido_medida'] && $p['unidad_medida']): ?>
+                (
+                <?php echo $p['contenido_medida']; ?>
+                <?php echo $p['unidad_medida']; ?>
+                )
+            <?php endif; ?>
+        </td>
 
-?>
+        <td><?php echo $p['categoria']; ?></td>
+        <td><?php echo $p['proveedor']; ?></td>
+        <td><?php echo $p['marca']; ?></td>
+        <td>$<?php echo number_format($p['precio_compra'],2); ?></td>
+        <td>$<?php echo number_format($p['precio_venta'],2); ?></td>
+        <td><span class="stock <?php echo $clase; ?>">
+        <?php echo $p['stock_almacen']; ?></span></td>
+        <td><?php echo $p['ubicacion']; ?></td>
+        <td>
+        <a href="editar.php?id=<?php echo $p['id']; ?>"> ✏️ </a>
+        <a href="eliminar.php?id=<?php echo $p['id']; ?>" onclick="return confirm('¿Eliminar producto?')"> 🗑️ </a>
+        </td>
 
-<tr>
-
-<td><?php echo $p['codigo_barras']; ?></td>
-
-<td>
-
-    <?php echo $p['nombre']; ?>
-
-    <?php if($p['contenido_medida'] && $p['unidad_medida']): ?>
-
-        (
-        <?php echo $p['contenido_medida']; ?>
-        <?php echo $p['unidad_medida']; ?>
-        )
-
-    <?php endif; ?>
-
-</td>
-
-<td><?php echo $p['categoria']; ?></td>
-
-<td>
-$<?php echo number_format($p['precio_compra'],2); ?>
-</td>
-
-<td>
-$<?php echo number_format($p['precio_venta'],2); ?>
-</td>
-
-<td>
-
-<span class="stock <?php echo $clase; ?>">
-
-<?php echo $p['stock_almacen']; ?>
-
-</span>
-
-</td>
-
-<td>
-
-<a href="../productos/editar.php?id=<?php echo $p['id']; ?>">
-✏️
-</a>
-
-<a
-href="../productos/eliminar.php?id=<?php echo $p['id']; ?>"
-onclick="return confirm('¿Eliminar producto?')">
-🗑️
-</a>
-
-</td>
-
-</tr>
-
-<?php endforeach; ?>
-
-</tbody>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
 
 </table>
 
