@@ -97,10 +97,6 @@ foreach($data['productos'] as $p){
     ORDER BY fecha_caducidad ASC
     ");
 
-    $lotes->execute([
-        $p['id']
-    ]);
-
     $lotes = $lotes->fetchAll();
 
     /* STOCK ACTUAL PRODUCTO */
@@ -178,6 +174,25 @@ foreach($data['productos'] as $p){
         $p['id']
 
     ]);
+
+    $verificar = $conexion->prepare("
+    SELECT stock_piso
+    FROM productos
+    WHERE id = ?
+    ");
+
+    $verificar->execute([$p['id']]);
+
+    $prod = $verificar->fetch();
+
+    if(!$prod || $prod['stock_piso'] < $p['cantidad']){
+
+        echo json_encode([
+            "ok" => false,
+            "mensaje" => "Stock insuficiente para ".$p['nombre']
+        ]);
+        exit();
+    }
 
     /* MOVIMIENTO INVENTARIO */
 

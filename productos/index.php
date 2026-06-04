@@ -17,6 +17,7 @@ LEFT JOIN categorias
 ON productos.categoria_id = categorias.id
 LEFT JOIN proveedores
 ON productos.proveedor_id = proveedores.id
+WHERE productos.activo = 1
 ORDER BY productos.id DESC
 ";
 
@@ -25,19 +26,19 @@ $productos = $stmt->fetchAll();
 $stmt_stock = $conexion->query("
     SELECT COUNT(*) AS total
     FROM productos
-    WHERE stock_almacen <= 5
+    WHERE stock_piso <= stock_minimo
 ");
 
 $caducados = $conexion->query("
 SELECT
 productos.nombre,
 lotes.fecha_caducidad,
-lotes.stock
+lotes.stock_piso
 FROM lotes
 INNER JOIN productos
 ON lotes.producto_id = productos.id
 WHERE lotes.fecha_caducidad <= DATE_ADD(NOW(), INTERVAL 30 DAY)
-AND lotes.stock > 0
+AND lotes.stock_piso > 0
 ORDER BY lotes.fecha_caducidad ASC
 ")->fetchAll();
 
@@ -194,9 +195,9 @@ table td{
 <?php
 
 $criticos = $conexion->query("
-SELECT nombre, stock, stock_minimo
+SELECT nombre, stock_piso, stock_minimo
 FROM productos
-WHERE stock <= stock_minimo
+WHERE stock_piso <= stock_minimo
 LIMIT 5
 ")->fetchAll();
 
@@ -219,7 +220,7 @@ ORDER BY nombre ASC
 
         <p>
         • <?php echo $c['nombre']; ?>
-        (<?php echo $c['stock']; ?>/<?php echo $c['stock_minimo']; ?>)
+        (<?php echo $c['stock_piso']; ?>/<?php echo $c['stock_minimo']; ?>)
         </p>
 
     <?php endforeach; ?>
@@ -296,10 +297,10 @@ ORDER BY nombre ASC
                 <?php
 
                 $clase = 'normal';
-                if($p['stock_almacen'] <= $p['stock_minimo']){
+                if($p['stock_piso'] <= $p['stock_minimo']){
                     $clase = 'bajo';
                 }
-                elseif($p['stock_almacen'] <= ($p['stock_minimo'] + 5)){
+                elseif($p['stock_piso'] <= ($p['stock_minimo'] + 5)){
                     $clase = 'medio';
                 }
                 else{
@@ -312,6 +313,7 @@ ORDER BY nombre ASC
                     <?php echo $p['stock_piso']; ?>
                 </td>
                 <td><?php echo $p['stock_minimo']; ?></td>
+                <td><?php echo $p['ubicacion']; ?></td>
 
             </tr>
 
@@ -326,7 +328,7 @@ ORDER BY nombre ASC
             | Caduca:
             <?php echo $c['fecha_caducidad']; ?>
             | Stock:
-            <?php echo $c['stock']; ?>
+            <?php echo $c['stock_piso']; ?>
             </p>
             <?php endforeach; ?>
             </div>

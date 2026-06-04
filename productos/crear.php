@@ -513,15 +513,6 @@ select:focus{
         </div>
 
         <div class="form-group">
-            <label>🏪 Stock piso</label>
-            <input
-            type="number"
-            name="stock_piso"
-            value="0"
-            required>
-        </div>
-
-        <div class="form-group">
             <label>📍 Ubicación en almacén</label>
             <input
             type="text"

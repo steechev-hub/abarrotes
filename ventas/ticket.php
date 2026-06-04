@@ -191,22 +191,9 @@ CAJERO:
 <hr>
 
 <div class="total">
-
-<p>
-TOTAL:
-$<?php echo number_format($venta['total'],2); ?>
-</p>
-
-<p>
-RECIBIDO:
-$<?php echo number_format($venta['recibido'],2); ?>
-</p>
-
-<p>
-CAMBIO:
-$<?php echo number_format($venta['cambio'],2); ?>
-</p>
-
+    <p>TOTAL:$<?php echo number_format($venta['total'],2); ?></p>
+    <p>RECIBIDO:$<?php echo number_format($venta['recibido'],2); ?></p>
+    <p>CAMBIO:$<?php echo number_format($venta['cambio'],2); ?></p>
 </div>
 
 <hr>

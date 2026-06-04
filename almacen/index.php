@@ -23,6 +23,7 @@ LEFT JOIN categorias
     ON productos.categoria_id = categorias.id
 LEFT JOIN proveedores
     ON productos.proveedor_id = proveedores.id
+    WHERE productos.activo = 1
 ORDER BY productos.id DESC
 ";
 $stmt = $conexion->query($sql);
@@ -252,7 +253,7 @@ table td{
             <a href="entrada_compra.php" class="btn"> 📥 Entrada compra</a>
             <a href="entrada_cortesia.php" class="btn"> 🎁 Entrada cortesia</a>
             <a href="pedidos_proveedor.php" class="btn"> 📋 Pedidos Proveedor</a>
-            <a href="../compras/index.php" class="btn"> 📥 Compras</a>
+            <a href="../compras/crear.php" class="btn"> 📥 Compras</a>
             </div>
     </div>
 <table>

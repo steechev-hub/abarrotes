@@ -35,7 +35,8 @@ if(!$proveedor){
 ========================= */
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $nombre = $_POST['nombre_empresa'];
+    $nombre_empresa = $_POST['nombre_empresa'];
+    $marca = $_POST['marca'];
     $empresa_telefono = $_POST['empresa_telefono'];
     $email = $_POST['email'];
     $empresa_direccion = $_POST['empresa_direccion'];
@@ -47,7 +48,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $update = "
 
     UPDATE proveedores SET
-        nombre = ?,
+        nombre_empresa = ?,
+        marca = ?,
         empresa_telefono = ?,
         email = ?,
         empresa_direccion = ?,
@@ -61,7 +63,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     $stmt = $conexion->prepare($update);
     $stmt->execute([
-        $nombre,
+        $nombre_empresa,
+        $marca,
         $empresa_telefono,
         $email,
         $empresa_direccion,
@@ -162,9 +165,18 @@ h3{
             <label>Nombre de la empresa</label>
                 <input
                 type="text"
-                name="nombre"
+                name="nombre_empresa"
                 value="<?php echo $proveedor['nombre_empresa']; ?>"
                 required>
+
+            <label>Marcas que distribuye</label>
+                <textarea
+                name="marca"
+                placeholder="Ejemplo:
+                Sabritas
+                Coca Cola
+                Gamesa
+                Marinela"><?php echo $proveedor['marca']; ?></textarea>
 
             <label>Teléfono de la empresa</label>
                 <input

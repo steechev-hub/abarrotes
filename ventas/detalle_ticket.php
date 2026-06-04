@@ -76,66 +76,55 @@ table td{
 
 <div class="card">
 
-<h2>
-🧾 Ticket #<?php echo $venta['id']; ?>
-</h2>
-
-<p>
-Fecha:
-<?php echo $venta['fecha']; ?>
-</p>
+    <h2>🧾 Ticket #<?php echo $venta['id']; ?></h2>
+    <p>Fecha:<?php echo $venta['fecha']; ?></p>
 
 <hr>
 
 <table>
 
-<thead>
+    <thead>
 
-<tr>
-    <th>Producto</th>
-    <th>Cantidad</th>
-    <th>Precio</th>
-    <th>Subtotal</th>
-</tr>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Subtotal</th>
+        </tr>
 
-</thead>
+    </thead>
 
-<tbody>
+    <tbody>
 
-<?php foreach($productos as $p): ?>
+        <?php foreach($productos as $p): ?>
 
-<tr>
+            <tr>
 
-<td>
-    <?php echo $p['nombre']; ?>
-</td>
+                <td>
+                    <?php echo $p['nombre']; ?>
+                </td>
 
-<td>
-    <?php echo $p['cantidad']; ?>
-</td>
+                <td>
+                    <?php echo $p['cantidad']; ?>
+                </td>
 
-<td>
-    $<?php echo number_format($p['precio'],2); ?>
-</td>
+                <td>
+                    $<?php echo number_format($p['precio'],2); ?>
+                </td>
 
-<td>
-    $<?php echo number_format($p['subtotal'],2); ?>
-</td>
+                <td>
+                    $<?php echo number_format($p['subtotal'],2); ?>
+                </td>
 
-</tr>
+            </tr>
 
-<?php endforeach; ?>
+        <?php endforeach; ?>
 
-</tbody>
+    </tbody>
 
 </table>
 
-<div class="total">
-
-TOTAL:
-$<?php echo number_format($venta['total'],2); ?>
-
-</div>
+    <div class="total">TOTAL:$<?php echo number_format($venta['total'],2); ?></div>
 
 </div>
 

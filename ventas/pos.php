@@ -379,6 +379,8 @@ table td{
                         <th>Subtotal</th>
                     </tr>
                 </thead>
+                <tbody id="tabla-body">
+                </tbody>
             </table>
         </div>
     </div>
@@ -431,7 +433,6 @@ table td{
         <!-- ACCIONES -->
 
         <div class="quick-actions">
-            <h3>⚡ Acciones rápidas</h3>
             <div class="quick-grid">
                 <div class="back-container">
                     <a href="../index.php" class="btn-back">⬅ Regresar al menú principal</a>
@@ -456,20 +457,39 @@ BUSCAR PRODUCTO
 ========================= */
 
 function buscarProducto(codigo){
-    fetch("buscar_producto.php?codigo=" + codigo)
-    .then(res => res.json())
+
+    fetch("buscar_producto.php?codigo=" + encodeURIComponent(codigo))
+
+    .then(response => response.json())
+
     .then(data => {
-        if(data.error){
-            alert("❌ Producto no encontrado");
+
+        console.log(data);
+
+        if(!data){
+            alert("Error al obtener producto");
             return;
         }
+
+        if(data.error){
+            alert(data.error);
+            return;
+        }
+
         agregarProducto(data);
+
         codigoInput.focus();
+
     })
+
     .catch(error => {
-        console.log(error);
+
+        console.error(error);
+
         alert("Error al buscar producto");
+
     });
+
 }
 
 /* =========================
@@ -509,17 +529,26 @@ RENDER TABLA
 ========================= */
 
 function render(){
+
     let tbody =
-        document.querySelector("#tabla tbody");
+        document.getElementById("tabla-body");
+
     tbody.innerHTML = "";
+
     let total = 0;
+
     carrito.forEach((p,index) => {
+
         let subtotal =
             parseFloat(p.precio_venta) * p.cantidad;
+
         total += subtotal;
+
         tbody.innerHTML += `
         <tr>
-            <td>${p.nombre}
+
+            <td>
+                ${p.nombre}
                 ${
                     p.contenido_medida && p.unidad_medida
                     ? `(${p.contenido_medida} ${p.unidad_medida})`
@@ -528,15 +557,13 @@ function render(){
             </td>
 
             <td>
-                $${parseFloat(
-                    p.precio_venta
-                ).toFixed(2)}
+                $${parseFloat(p.precio_venta).toFixed(2)}
             </td>
 
             <td>
-                <button onclick="restar(${index})"> ➖</button>
+                <button onclick="restar(${index})">➖</button>
                 ${p.cantidad}
-                <button onclick="sumar(${index})"> ➕ </button>
+                <button onclick="sumar(${index})">➕</button>
             </td>
 
             <td>
@@ -549,12 +576,10 @@ function render(){
 
     totalGeneral = total;
 
-    document.getElementById("total")
-    .innerHTML =
+    document.getElementById("total").innerHTML =
         "$" + total.toFixed(2);
 
     calcularCambio();
-
 }
 
 /* =========================
@@ -619,12 +644,13 @@ function calcularCambio(){
 /* =========================
 PAGAR
 ========================= */
-
 function pagar(){
-    if(carrito.length <= 0){
+
+    if(carrito.length == 0){
         alert("❌ No hay productos");
         return;
     }
+
     let recibido =
         parseFloat(
             document.getElementById("recibido").value
@@ -635,44 +661,65 @@ function pagar(){
         return;
     }
 
-    fetch("procesar_venta.php", {
+    fetch("procesar_venta.php",{
         method:"POST",
         headers:{
             "Content-Type":"application/json"
         },
-
-        body: JSON.stringify({
-            productos: carrito,
-            recibido: recibido
+        body:JSON.stringify({
+            productos:carrito,
+            recibido:recibido
         })
-
     })
 
-    .then(res => res.json())
+    .then(res => res.text())
+
     .then(resp => {
-        if(resp.ok){
+
+        console.log(resp);
+
+        let data;
+
+        try{
+            data = JSON.parse(resp);
+        }catch(e){
+            alert("Error PHP:\n\n" + resp);
+            return;
+        }
+
+        if(data.ok){
+
             alert("✅ Venta realizada");
+
             window.open(
-                "ticket.php?id=" + resp.venta_id,
+                "ticket.php?id=" + data.venta_id,
                 "_blank"
             );
+
             carrito = [];
+
             render();
-            document
-            .getElementById("recibido")
-            .value = "";
-            document
-            .getElementById("cambio")
-            .innerHTML = "$0.00";
-            codigoInput.focus();
+
+            document.getElementById("recibido").value="";
+
+            document.getElementById("cambio").innerHTML="$0.00";
+
         }else{
-            alert("Error al guardar venta");
+
+            alert(data.error || "Error al guardar venta");
+
         }
+
     })
+
     .catch(error => {
+
         console.log(error);
-        alert("Error servidor");
+
+        alert("Error de conexión");
+
     });
+
 }
 
 /* =========================
