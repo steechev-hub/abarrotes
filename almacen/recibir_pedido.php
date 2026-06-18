@@ -22,6 +22,13 @@ WHERE pp.id=?
 $stmt->execute([$id]);
 
 $pedido = $stmt->fetch();
+if(!$pedido){
+    die("Pedido no encontrado");
+}
+
+if($pedido['estado'] == 'recibido'){
+    die("⚠ Este pedido ya fue recibido y cerrado.");
+}
 ?>
 
 <!DOCTYPE html>
@@ -137,6 +144,7 @@ input:focus{
                     <strong>Cantidad recibida anteriormente:</strong>
                     <?= $pedido['cantidad_recibida']; ?>
                 </p>
+            
                 <p>
                     <strong>Estado:</strong>
                     <?= ucfirst($pedido['estado']); ?>
@@ -158,13 +166,9 @@ input:focus{
                         max="<?= $pedido['cantidad_solicitada']; ?>"
                         required>
                 </div>
-
                     <button class="btn">💾 Guardar Recepción</button>
             </form>
-
         </div>
-
     </div>
-
 </body>
 </html>

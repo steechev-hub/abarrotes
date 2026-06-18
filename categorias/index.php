@@ -67,60 +67,73 @@ table th,
 table td{
     text-align:center;
 }
+.btn-editar{
+    background:#ffc107;
+    color:#000;
+    padding:8px 12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+    margin-right:5px;
+}
 
+.btn-eliminar{
+    background:#dc3545;
+    color:white;
+    padding:8px 12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+}
 </style>
 </head>
 
 <body>
+    <?php include("../includes/sidebar.php"); ?>
+    <div class="main">
+        <?php include("../includes/topbar.php"); ?>
 
-<?php include("../includes/sidebar.php"); ?>
+        <div class="table-container">
+            <div class="top-actions">
 
-<div class="main">
+                <h2>🗂️ Categorías</h2>
 
-<?php include("../includes/topbar.php"); ?>
+                <a href="crear.php" class="btn">
+                    ➕ Nueva categoría
+                </a>
 
-<div class="table-container">
+            </div>
 
-<div class="top-actions">
+            <table>
 
-    <h2>🗂️ Categorías</h2>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
 
-    <a href="crear.php" class="btn">
-        ➕ Nueva categoría
-    </a>
+                <tbody>
+                    <?php foreach($categorias as $c): ?>
+                    <tr>
+                        <td><?php echo $c['nombre']; ?></td>
 
-</div>
-
-<table>
-
-<thead>
-<tr>
-    <th>ID</th>
-    <th>Nombre</th>
-</tr>
-</thead>
-
-<tbody>
-
-<?php foreach($categorias as $c): ?>
-
-<tr>
-
-    <td><?php echo $c['id']; ?></td>
-
-    <td><?php echo $c['nombre']; ?></td>
-
-</tr>
-
-<?php endforeach; ?>
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
+                        <td>
+                            <a href="editar.php?id=<?php echo $c['id']; ?>"
+                            class="btn-editar">
+                            ✏️ Editar
+                            </a>
+                            <a href="eliminar.php?id=<?php echo $c['id']; ?>"
+                            class="btn-eliminar"
+                            onclick="return confirm('¿Deseas eliminar esta categoría?')">
+                            🗑️ Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>

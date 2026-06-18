@@ -12,6 +12,20 @@ SELECT *
 FROM productos
 ORDER BY nombre
 ")->fetchAll();
+
+$categorias = $conexion->query("
+SELECT *
+FROM categorias
+ORDER BY nombre
+")->fetchAll();
+
+$marcas = $conexion->query("
+SELECT DISTINCT marca
+FROM productos
+WHERE marca IS NOT NULL
+AND marca <> ''
+ORDER BY marca
+")->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -112,19 +126,50 @@ table td{
 
 <select id="proveedor">
 
-<option value="">Seleccionar</option>
+    <option value="">Seleccionar</option>
 
-<?php foreach($proveedores as $p): ?>
+    <?php foreach($proveedores as $p): ?>
 
-<option value="<?php echo $p['id']; ?>">
+    <option value="<?php echo $p['id']; ?>">
 
-<?php echo $p['nombre_empresa']; ?>
+    <?php echo $p['nombre_empresa']; ?>
 
-</option>
-
-<?php endforeach; ?>
+    </option>
+    <?php endforeach; ?>
 
 </select>
+
+<label>Categoría</label>
+
+<select id="categoria">
+    <option value="">Seleccionar categoría</option>
+
+    <?php foreach($categorias as $c): ?>
+
+    <option value="<?php echo $c['id']; ?>">
+        <?php echo $c['nombre']; ?>
+    </option>
+
+    <?php endforeach; ?>
+
+</select>
+
+<label>Marca</label>
+
+<select id="marca">
+
+    <option value="">Seleccionar marca</option>
+
+    <?php foreach($marcas as $m): ?>
+
+    <option value="<?php echo $m['marca']; ?>">
+        <?php echo $m['marca']; ?>
+    </option>
+
+    <?php endforeach; ?>
+
+</select>
+
 
 <hr><br>
 
@@ -219,22 +264,20 @@ data-nombre="<?php echo $p['nombre']; ?>"
 </button>
 
 <table id="tabla">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Marca</th>
+            <th>Cantidad</th>
+            <th>Costo</th>
+            <th>Lote</th>
+            <th>Caducidad</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
 
-<thead>
-
-<tr>
-<th>Producto</th>
-<th>Cantidad</th>
-<th>Costo</th>
-<th>Lote</th>
-<th>Caducidad</th>
-<th>Subtotal</th>
-</tr>
-
-</thead>
-
-<tbody></tbody>
-
+    <tbody></tbody>
 </table>
 
 <div class="total" id="total">
@@ -297,22 +340,27 @@ function agregarProducto(){
 
     let select =
         document.getElementById("producto");
-
     let producto_id = select.value;
-
     let nombre =
         select.options[select.selectedIndex]
         .dataset.nombre;
+    let categoria_id =
+        document.getElementById("categoria").value;
 
+    let categoria =
+        document.getElementById("categoria")
+        .options[
+            document.getElementById("categoria").selectedIndex
+        ].text;
+
+    let marca =
+        document.getElementById("marca").value;
     let cantidad =
         document.getElementById("cantidad").value;
-
     let precio =
         document.getElementById("precio").value;
-
     let lote =
         document.getElementById("lote").value;
-
     let caducidad =
         document.getElementById("caducidad").value;
 
@@ -324,11 +372,23 @@ function agregarProducto(){
         alert("Completa datos");
         return;
     }
+    if(!categoria_id){
+        alert("Selecciona una categoría");
+        return;
+    }
+
+    if(!marca){
+        alert("Selecciona una marca");
+        return;
+    }
 
     compra.push({
 
         producto_id,
         nombre,
+        categoria_id,
+        categoria,
+        marca,
         cantidad,
         precio,
         lote,
@@ -367,6 +427,8 @@ function render(){
         tbody.innerHTML += `
         <tr>
             <td>${p.nombre}</td>
+            <td>${p.categoria}</td>
+            <td>${p.marca}</td>
             <td>${p.cantidad}</td>
             <td>$${p.precio}</td>
             <td>${p.lote}</td>
@@ -386,6 +448,18 @@ function guardarCompra(){
 
     let proveedor_id =
         document.getElementById("proveedor").value;
+    
+    let categoria_id =
+        document.getElementById("categoria").value;
+
+    let categoria =
+        document.getElementById("categoria")
+        .options[
+            document.getElementById("categoria").selectedIndex
+        ].text;
+
+    let marca =
+        document.getElementById("marca").value;
 
     let tipo_pago =
         document.getElementById("tipo_pago").value;
@@ -434,6 +508,9 @@ function guardarCompra(){
         body: JSON.stringify({
 
             proveedor_id,
+            categoria_id,
+            categoria,
+            marca,
             tipo_pago,
             fecha_compra,
             fecha_limite,
@@ -445,35 +522,33 @@ function guardarCompra(){
     })
 
     .then(res => res.json())
-
     .then(resp => {
+
+        console.log(resp);
 
         if(resp.ok){
 
             alert("✅ Compra guardada correctamente");
 
-            /* LIMPIAR TODO */
-
             compra = [];
-
             render();
 
             document.getElementById("proveedor").value = "";
+            document.getElementById("categoria").value = "";
+            document.getElementById("marca").value = "";
             document.getElementById("tipo_pago").value = "contado";
-            document.getElementById("fecha_compra").value =
-                "<?php echo date('Y-m-d'); ?>";
-
             document.getElementById("pagado").value = "0";
 
             mostrarPagoInicial();
 
-        } else {
+        }else{
 
             alert("Error al guardar");
 
         }
 
     })
+
 
     .catch(error => {
 

@@ -515,6 +515,11 @@ AGREGAR PRODUCTO
 function agregarProducto(producto){
     let existente =
         carrito.find(p => p.id == producto.id);
+    if(parseInt(producto.stock_piso) <= 0){
+    alert("❌ Este producto no tiene stock en piso");
+    return;
+}
+
     if(existente){
         existente.cantidad++;
     }else{
@@ -522,6 +527,8 @@ function agregarProducto(producto){
         carrito.push(producto);
     }
     render();
+
+
 }
 
 /* =========================

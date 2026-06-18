@@ -145,126 +145,110 @@ tr:hover{
 .btn-back:hover{
     background:#5a6268;
 }
-
 </style>
 </head>
 <body>
 
 <div class="card">
+    <h2>🧾 Historial de Tickets</h2>
+        <div class="total">
+            💰 Total vendido:
+            $<?php echo number_format($totalDia,2); ?>
+        </div>
 
-<h2>🧾 Historial de Tickets</h2>
+    <form method="GET">
+        <div class="filtros">
+            <input
+                type="date"
+                name="inicio"
+                value="<?php echo $fecha_inicio; ?>">
 
-<div class="total">
-    💰 Total vendido:
-    $<?php echo number_format($totalDia,2); ?>
-</div>
+            <input
+                type="date"
+                name="fin"
+                value="<?php echo $fecha_fin; ?>">
+            <button class="btn buscar">🔎 Buscar</button>
+            <a href="../index.php" class="btn-back">⬅ Regresar al menú principal</a>
+        </div>
+    </form>
 
-<form method="GET">
+    <table>
+        <thead>
+            <tr>
+                <th>Folio</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Recibido</th>
+                <th>Cambio</th>
+                <th>Método</th>
+                <th>Usuario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
 
-<div class="filtros">
+        <tbody>
+            <?php
+                $ventasAsc = $ventas;
 
-    <input
-    type="date"
-    name="inicio"
-    value="<?php echo $fecha_inicio; ?>">
+                /* ordenar temporalmente de más antigua a más reciente */
+                usort($ventasAsc, function($a, $b){
+                    return strtotime($a['fecha']) - strtotime($b['fecha']);
+                });
 
-    <input
-    type="date"
-    name="fin"
-    value="<?php echo $fecha_fin; ?>">
+                $foliosDia = [];
+                $foliosAsignados = [];
 
-    <button class="btn buscar">
-        🔎 Buscar
-    </button>
-    <a href="../index.php" class="btn-back">
-                    ⬅ Regresar al menú principal
-</a>
+                /* generar folios correctos */
+                foreach($ventasAsc as $venta){
 
-</div>
+                    $fechaVenta = date('Y-m-d', strtotime($venta['fecha']));
 
-</form>
+                    if(!isset($foliosDia[$fechaVenta])){
+                        $foliosDia[$fechaVenta] = 1;
+                    }
 
-<table>
+                    $foliosAsignados[$venta['id']] =
+                    "ST" .
+                    date('dmy', strtotime($venta['fecha'])) .
+                    "/" .
+                        str_pad($foliosDia[$fechaVenta], 3, "0", STR_PAD_LEFT);
 
-<thead>
+                    $foliosDia[$fechaVenta]++;
+                }
 
-<tr>
-    <th>Folio</th>
-    <th>Fecha</th>
-    <th>Total</th>
-    <th>Recibido</th>
-    <th>Cambio</th>
-    <th>Método</th>
-    <th>Usuario</th>
-    <th>Acciones</th>
-</tr>
+                /* asignarlos al arreglo original */
+                foreach($ventas as $key => $venta){
 
-</thead>
+                    $ventas[$key]['folio_dia'] =
+                        $foliosAsignados[$venta['id']];
+                }
+            ?>
+            <?php foreach($ventas as $v): ?>
+                <tr>
+                    <td><?php echo $v['folio_dia']; ?></td>
+                    <td><?php echo $v['fecha']; ?></td>
+                    <td>$<?php echo number_format($v['total'],2); ?></td>
+                    <td>$<?php echo number_format($v['recibido'],2); ?></td>
+                    <td>$<?php echo number_format($v['cambio'],2); ?></td>
+                    <td><?php echo $v['metodo_pago']; ?></td>
+                    <td><?php echo $v['usuario']; ?></td>
 
-<tbody>
+                    <td>
+                        <a
+                            href="ticket.php?id=<?php echo $v['id']; ?>"
+                            target="_blank">
+                            <button class="btn imprimir">🖨 Reimprimir</button>
+                        </a>
 
-<?php foreach($ventas as $v): ?>
-
-<tr>
-
-<td>
-    #<?php echo $v['id']; ?>
-</td>
-
-<td>
-    <?php echo $v['fecha']; ?>
-</td>
-
-<td>
-    $<?php echo number_format($v['total'],2); ?>
-</td>
-
-<td>
-    $<?php echo number_format($v['recibido'],2); ?>
-</td>
-
-<td>
-    $<?php echo number_format($v['cambio'],2); ?>
-</td>
-
-<td>
-    <?php echo $v['metodo_pago']; ?>
-</td>
-
-<td>
-    <?php echo $v['usuario']; ?>
-</td>
-
-<td>
-
-<a
-href="ticket.php?id=<?php echo $v['id']; ?>"
-target="_blank">
-
-<button class="btn imprimir">
-🖨 Reimprimir
-</button>
-
-</a>
-
-<a
-href="detalle_ticket.php?id=<?php echo $v['id']; ?>">
-
-<button class="btn detalle">
-👁 Ver
-</button>
-
-</a>
-
-</td>
-
-</tr>
-
-<?php endforeach; ?>
-
-</tbody>
-
-</table>
+                        <a
+                            href="detalle_ticket.php?id=<?php echo $v['id']; ?>">
+                            <button class="btn detalle">👁 Ver</button>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
 </div>
 

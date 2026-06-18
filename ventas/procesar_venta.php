@@ -10,9 +10,60 @@ include("../config/db.php");
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$total = 0;
+/* =========================
+VALIDAR DATOS
+========================= */
 
-/* CALCULAR TOTAL */
+if(!$data || empty($data['productos'])){
+
+    echo json_encode([
+        "ok" => false,
+        "error" => "No se recibieron productos"
+    ]);
+    exit();
+}
+
+/* =========================
+VALIDAR STOCK ANTES DE VENDER
+========================= */
+
+foreach($data['productos'] as $p){
+
+    $verificar = $conexion->prepare("
+        SELECT nombre, stock_piso
+        FROM productos
+        WHERE id = ?
+    ");
+
+    $verificar->execute([$p['id']]);
+
+    $producto = $verificar->fetch(PDO::FETCH_ASSOC);
+
+    if(!$producto){
+
+        echo json_encode([
+            "ok" => false,
+            "error" => "Producto no encontrado"
+        ]);
+        exit();
+    }
+
+    if($producto['stock_piso'] < $p['cantidad']){
+
+        echo json_encode([
+            "ok" => false,
+            "error" => "❌ Stock insuficiente para ".$producto['nombre'].
+                       ". Disponible: ".$producto['stock_piso']
+        ]);
+        exit();
+    }
+}
+
+/* =========================
+CALCULAR TOTAL
+========================= */
+
+$total = 0;
 
 foreach($data['productos'] as $p){
 
@@ -54,8 +105,7 @@ GUARDAR DETALLE
 
 foreach($data['productos'] as $p){
 
-    $subtotal =
-        $p['precio_venta'] * $p['cantidad'];
+    $subtotal = $p['precio_venta'] * $p['cantidad'];
 
     /* DETALLE VENTA */
 
@@ -81,25 +131,7 @@ foreach($data['productos'] as $p){
 
     ]);
 
-    /* =========================
-    FIFO LOTES
-    ========================= */
-
-    $cantidad_restante = $p['cantidad'];
-
-    /* OBTENER LOTES */
-
-    $lotes = $conexion->prepare("
-    SELECT *
-    FROM lotes
-    WHERE producto_id = ?
-    AND stock_piso > 0
-    ORDER BY fecha_caducidad ASC
-    ");
-
-    $lotes = $lotes->fetchAll();
-
-    /* STOCK ACTUAL PRODUCTO */
+    /* STOCK ACTUAL */
 
     $stockActual = $conexion->prepare("
     SELECT stock_piso
@@ -107,15 +139,29 @@ foreach($data['productos'] as $p){
     WHERE id = ?
     ");
 
-    $stockActual->execute([
-        $p['id']
-    ]);
+    $stockActual->execute([$p['id']]);
 
-    $actual = $stockActual->fetch();
+    $actual = $stockActual->fetch(PDO::FETCH_ASSOC);
 
     $stock_anterior = $actual['stock_piso'];
 
-    /* RECORRER LOTES */
+    /* =========================
+    FIFO LOTES
+    ========================= */
+
+    $cantidad_restante = $p['cantidad'];
+
+    $lotesStmt = $conexion->prepare("
+    SELECT *
+    FROM lotes
+    WHERE producto_id = ?
+    AND stock_piso > 0
+    ORDER BY fecha_caducidad ASC
+    ");
+
+    $lotesStmt->execute([$p['id']]);
+
+    $lotes = $lotesStmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach($lotes as $lote){
 
@@ -125,17 +171,13 @@ foreach($data['productos'] as $p){
 
         $stock_lote = $lote['stock_piso'];
 
-        /* DESCONTAR */
-
-        $descontar =
-            min($cantidad_restante, $stock_lote);
-
-        /* NUEVO STOCK LOTE */
+        $descontar = min(
+            $cantidad_restante,
+            $stock_lote
+        );
 
         $nuevo_stock_lote =
             $stock_lote - $descontar;
-
-        /* ACTUALIZAR LOTE */
 
         $updateLote = $conexion->prepare("
         UPDATE lotes
@@ -150,17 +192,15 @@ foreach($data['productos'] as $p){
 
         ]);
 
-        /* RESTAR PENDIENTE */
-
         $cantidad_restante -= $descontar;
     }
 
-    /* NUEVO STOCK GENERAL */
+    /* =========================
+    ACTUALIZAR PRODUCTO
+    ========================= */
 
     $stock_nuevo =
         $stock_anterior - $p['cantidad'];
-
-    /* ACTUALIZAR STOCK PRODUCTO */
 
     $updateProducto = $conexion->prepare("
     UPDATE productos
@@ -175,26 +215,9 @@ foreach($data['productos'] as $p){
 
     ]);
 
-    $verificar = $conexion->prepare("
-    SELECT stock_piso
-    FROM productos
-    WHERE id = ?
-    ");
-
-    $verificar->execute([$p['id']]);
-
-    $prod = $verificar->fetch();
-
-    if(!$prod || $prod['stock_piso'] < $p['cantidad']){
-
-        echo json_encode([
-            "ok" => false,
-            "mensaje" => "Stock insuficiente para ".$p['nombre']
-        ]);
-        exit();
-    }
-
-    /* MOVIMIENTO INVENTARIO */
+    /* =========================
+    MOVIMIENTO INVENTARIO
+    ========================= */
 
     $mov = $conexion->prepare("
     INSERT INTO movimientos_inventario
@@ -223,11 +246,10 @@ foreach($data['productos'] as $p){
         'ventas'
 
     ]);
-
 }
 
 /* =========================
-RESPUESTA
+RESPUESTA FINAL
 ========================= */
 
 echo json_encode([

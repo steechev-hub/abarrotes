@@ -157,94 +157,81 @@ textarea{
 
 <h2>🧾 Configuración del Ticket</h2>
 
-<?php if(isset($_GET['ok'])): ?>
+    <?php if(isset($_GET['ok'])): ?>
 
-<div class="alert">
+    <div class="alert"> ✅ Configuración actualizada</div>
 
-✅ Configuración actualizada
-
-</div>
-
-<?php endif; ?>
+    <?php endif; ?>
 
 <form method="POST" enctype="multipart/form-data">
+    <label>Nombre del negocio</label>
+        <input
+            type="text"
+            name="nombre_negocio"
+            value="<?php echo $config['nombre_negocio']; ?>">
 
-<label>Nombre del negocio</label>
+    <label>Teléfono</label>
+        <input
+            type="text"
+            name="telefono"
+            value="<?php echo $config['telefono']; ?>">
 
-<input
-type="text"
-name="nombre_negocio"
-value="<?php echo $config['nombre_negocio']; ?>">
+    <label>Dirección</label>
+        <textarea
+            name="direccion"><?php echo $config['direccion']; ?></textarea>
 
-<label>Teléfono</label>
+    <label>Facebook / Redes</label>
+        <input
+            type="text"
+            name="facebook"
+            value="<?php echo $config['facebook']; ?>">
 
-<input
-type="text"
-name="telefono"
-value="<?php echo $config['telefono']; ?>">
+    <label>Logo del negocio</label>
+        <input
+            type="file"
+            name="logo"
+            accept="image/*">
 
-<label>Dirección</label>
+    <?php if($config['logo'] != ''): ?>
 
-<textarea
-name="direccion"><?php echo $config['direccion']; ?></textarea>
+    <br><br>
+    <img
+        src="../uploads/<?php echo $config['logo']; ?>"
+        style="
+        width:120px;
+        border-radius:15px;
+        ">
 
-<label>Facebook / Redes</label>
+    <?php endif; ?>
 
-<input
-type="text"
-name="facebook"
-value="<?php echo $config['facebook']; ?>">
+    <br><br>
 
-<label>Logo del negocio</label>
+    <label>
+        <input
+            type="checkbox"
+            name="mostrar_cajero"
 
-<input
-type="file"
-name="logo"
-accept="image/*">
+    <?php
+        if($config['mostrar_cajero']){
+            echo "checked";
+        }
+    ?>
 
-<?php if($config['logo'] != ''): ?>
+    >
 
-<br><br>
+        Mostrar nombre del cajero en ticket
+        </label>
 
-<img
-src="../uploads/<?php echo $config['logo']; ?>"
-style="
-width:120px;
-border-radius:15px;
-">
+        <label>Mensaje final del ticket</label>
 
-<?php endif; ?>
+        <textarea
+            name="mensaje_final"><?php echo $config['mensaje_final']; ?></textarea>
 
-<br><br>
+        <button class="btn">💾 Guardar configuración</button>
 
-<label>
-
-<input
-type="checkbox"
-name="mostrar_cajero"
-
-<?php
-if($config['mostrar_cajero']){
-    echo "checked";
-}
-?>
-
->
-
-Mostrar nombre del cajero en ticket
-
-</label>
-
-<label>Mensaje final del ticket</label>
-
-<textarea
-name="mensaje_final"><?php echo $config['mensaje_final']; ?></textarea>
-
-<button class="btn">💾 Guardar configuración</button>
-
-<div class="back-container">
-<a href="../index.php" class="btn-back">⬅ Regresar al menú principal</a>
-</div>
+        <div class="back-container">
+            <a href="../index.php" class="btn-back">⬅ Regresar al menú principal</a>
+        </div>
 </form>
 
 </div>

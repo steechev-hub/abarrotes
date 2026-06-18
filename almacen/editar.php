@@ -429,22 +429,6 @@ select:focus{
 
     </div>
 
-    <!-- STOCK -->
-
-    <div class="grid-2">
-
-        <div class="form-group">
-
-                <label>🏬 Stock almacén</label>
-
-                <input
-                type="number"
-                name="stock_almacen"
-                value="<?php echo $producto['stock_almacen']; ?>"
-                required>
-
-        </div>
-    </div>
     <div class="form-group">
 
         <label>📍 Ubicación en almacén</label>

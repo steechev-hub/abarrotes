@@ -38,12 +38,9 @@ $saldo = $total - $pagado;
 $estado_pago = 'pendiente';
 
 if($saldo <= 0){
-
-    $estado_pago = 'pagado';
-
+        $estado_pago = 'pagado';
 } elseif($pagado > 0){
-
-    $estado_pago = 'parcial';
+        $estado_pago = 'parcial';
 }
 
 $stmt = $conexion->prepare("
@@ -66,7 +63,6 @@ VALUES
 ");
 
 $stmt->execute([
-
     $proveedor_id,
     $fecha_compra,
     $total,
@@ -75,7 +71,6 @@ $stmt->execute([
     $tipo_pago,
     $estado_pago,
     $fecha_limite
-
 ]);
 
 $compra_id = $conexion->lastInsertId();
@@ -129,14 +124,12 @@ foreach($productos as $p){
     ");
 
     $detalle->execute([
-
         $compra_id,
         $p['producto_id'],
         $p['cantidad'],
         $p['precio'],
         $subtotal,
         $p['caducidad']
-
     ]);
 
     /* CREAR LOTE */
@@ -147,7 +140,7 @@ foreach($productos as $p){
         producto_id,
         lote,
         fecha_caducidad,
-        stock,
+        stock_piso,
         costo
     )
     VALUES(?,?,?,?,?)
@@ -168,7 +161,7 @@ foreach($productos as $p){
     /* STOCK ACTUAL */
 
     $stockActual = $conexion->prepare("
-    SELECT stock
+    SELECT stock_almacen
     FROM productos
     WHERE id = ?
     ");
@@ -179,7 +172,7 @@ foreach($productos as $p){
 
     $actual = $stockActual->fetch();
 
-    $stock_anterior = $actual['stock'];
+    $stock_anterior = $actual['stock_almacen'];
 
     $stock_nuevo =
         $stock_anterior + $p['cantidad'];
@@ -188,7 +181,7 @@ foreach($productos as $p){
 
     $update = $conexion->prepare("
     UPDATE productos
-    SET stock = stock + ?
+    SET stock_almacen = stock_almacen + ?
     WHERE id = ?
     ");
 
